@@ -4,13 +4,13 @@ use Test::More tests => 1;
 # build the testing classes
 package Person;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'People' );
+__PACKAGE__->meta->table( 'People' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'name' => ( is => 'rw' );
 has_many 'pets' => (
     foreign_class => 'Pet',
-    foreign_key => 'caretaker',
+    match_on => 'caretaker',
     handles => {
        'pets' => 'iter', 
     } 
@@ -20,7 +20,7 @@ has_many 'pets' => (
 
 package Pet;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Pets' );
+__PACKAGE__->meta->table( 'Pets' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'name' => ( is => 'rw' );
@@ -33,8 +33,8 @@ package main;
 use Storm;
 
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install_class( 'Person' );
-$storm->source->manager->install_class( 'Pet' );
+$storm->aeolus->install_class( 'Person' );
+$storm->aeolus->install_class( 'Pet' );
 
 
 my $person = Person->new( name => 'Marge' );

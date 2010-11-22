@@ -78,7 +78,7 @@ method inflate_value ( $orm, $attr, $value, @args ) {
         if ($type_constraint->can( 'class' ) &&
             $type_constraint->class &&
             $type_constraint->class->can( 'meta' ) &&
-            $type_constraint->class->meta->does_role( 'Storm::Role::Object::Base' ) ) {
+            $type_constraint->class->meta->does_role( 'Storm::Role::Object' ) ) {
             
             my $class = $type_constraint->class;
             my $key = $value;
@@ -147,7 +147,7 @@ method deflate_value ( $attr, $value, @args ) {
         if ($type_constraint->can('class') &&
             $type_constraint->class &&
             $type_constraint->class->can('meta') &&
-            $type_constraint->class->meta->does_role('Storm::Role::Object::Base')) {
+            $type_constraint->class->meta->does_role('Storm::Role::Object')) {
             
             my $class = $type_constraint->class;
             return undef unless defined $value;

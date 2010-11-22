@@ -4,7 +4,7 @@ use Test::More tests => 1;
 # build the testing classes
 package Frizzle;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Frizzle' );
+__PACKAGE__->meta->table( 'Frizzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'frazzle' => ( is => 'rw', isa => 'Frazzle' );
@@ -13,7 +13,7 @@ has 'frazzle' => ( is => 'rw', isa => 'Frazzle' );
 
 package Frazzle;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Frazzle' );
+__PACKAGE__->meta->table( 'Frazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 
@@ -23,8 +23,8 @@ package main;
 use Storm;
 
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install_class( 'Frizzle' );
-$storm->source->manager->install_class( 'Frazzle' );
+$storm->aeolus->install_class( 'Frizzle' );
+$storm->aeolus->install_class( 'Frazzle' );
 
 
 my $fraz = Frazzle->new;

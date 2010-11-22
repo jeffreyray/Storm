@@ -4,7 +4,7 @@ use Test::More tests => 1;
 # build the testing class
 package Person;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'People' );
+__PACKAGE__->meta->table( 'People' );
 
 use MooseX::Types::Moose qw( Int );
 
@@ -19,7 +19,7 @@ package main;
 
 use Storm;
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install_class( 'Person' );
+$storm->aeolus->install_class( 'Person' );
 
 my @test_info = (
     [qw/Marge  Simpson  38/],

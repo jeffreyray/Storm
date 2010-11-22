@@ -3,7 +3,7 @@ use Test::More tests => 15;
 
 package Bazzle;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Bazzle' );
+__PACKAGE__->meta->table( 'Bazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey )] );
 has 'foo' => ( is => 'rw' );
@@ -14,7 +14,7 @@ has 'baz' => ( is => 'rw' );
 package main;
 use Storm;
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install_class( 'Bazzle' );
+$storm->aeolus->install_class( 'Bazzle' );
 
 
 # test query creation

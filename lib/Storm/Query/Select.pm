@@ -61,7 +61,7 @@ method results ( @args ) {
     my @pass_values;
     
     for (@args) {
-        if ( ref $_ && $_->can('meta') &&  $_->meta->does_role('Storm::Role::Object::Base') ) {
+        if ( ref $_ && $_->can('meta') &&  $_->meta->does_role('Storm::Role::Object') ) {
             $_ =  $_->meta->primary_key->get_value( $_ );
         }
     }
@@ -72,7 +72,7 @@ method results ( @args ) {
                 push @pass_values, shift @args;
             }
             elsif ( $param->can('meta') &&
-                    $param->meta->does_role('Storm::Role::Object::Base') ) {
+                    $param->meta->does_role('Storm::Role::Object') ) {
                 my $id = $param->meta->primary_key->get_value( $param );
                 push @pass_values, $id;
             }

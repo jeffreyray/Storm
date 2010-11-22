@@ -17,7 +17,7 @@ use Storm::Builder;
 use MooseX::Types::Moose qw( Int Str );
 use Test::More;
 
-__PACKAGE__->meta->set_table( 'Bazzle' );
+__PACKAGE__->meta->table( 'Bazzle' );
 
 with 'MyRole';
 

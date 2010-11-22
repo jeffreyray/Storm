@@ -53,7 +53,7 @@ sub args_to_sql_objects {
                         if ($type_constraint->can('class') &&
                             $type_constraint->class &&
                             $type_constraint->class->can('meta') &&
-                            $type_constraint->class->meta->does_role('Storm::Role::Object::Base')) {
+                            $type_constraint->class->meta->does_role('Storm::Role::Object')) {
                     
                             
                             $class = $type_constraint->class;
@@ -86,7 +86,7 @@ sub args_to_sql_objects {
             # if we have a gi-orm object
             # replace the argument with a placeholder
             # containing the identifier
-            if ( $_->does( 'Storm::Role::Object::Base' ) ) {                
+            if ( $_->does( 'Storm::Role::Object' ) ) {                
                 $_ = Storm::SQL::Placeholder->new( value => $_->identifier); 
             }
         }

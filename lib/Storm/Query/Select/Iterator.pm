@@ -151,3 +151,77 @@ no Moose;
 __PACKAGE__->meta()->make_immutable();
 
 1;
+
+
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Storm::Query::Select::Iterator - Iterates over the results of a select query
+
+=head1 SYNOPSIS
+
+ $query = $storm->select( 'Person' )->where( '.first_name', '=', 'Homer' );
+
+ $iter = $query->results;
+
+ $iter->next; # get the next results
+
+ $iter->remaining; # get the remaining results
+
+ $iter->reset; # reset the query, to execute it again
+
+ $iter->all; # get all results
+
+    
+=head1 DESCRIPTION
+
+Results from a select query (L<Storm::Query::Select>) are returned in a
+L<Storm::Query::Select::Iterator> object. You can use the iterator to access
+the result set.
+
+=head1 METHODS
+
+=over 4
+
+=item all
+
+Returns the entire result set as a list.
+
+=item next
+
+Returns the next object in the result set or undef if there is none.
+
+=item remaining
+
+Returns all of the remaining objects in the result set as a list.
+
+=item reset
+
+Re-executes the query, resetting the current item to the first result.
+
+=back
+
+=head1 AUTHOR
+
+Jeffrey Ray Hallock E<lt>jeffrey.hallock at gmail dot comE<gt>
+
+=head1 COPYRIGHT
+
+    Copyright (c) 2010 Jeffrey Ray Hallock. All rights reserved.
+    This program is free software; you can redistribute it and/or
+    modify it under the same terms as Perl itself.
+
+=cut
+
+
+
+
+
+
+
+
+

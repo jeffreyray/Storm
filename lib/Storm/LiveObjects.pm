@@ -36,7 +36,7 @@ method remove ( @objects ) {
     for my $object (@objects) {
         
         confess $object, " is not an object" if ! blessed $object;
-        confess $object, " is not a Storm enabled object" if ! $object->does( 'Storm::Role::Object::Base' );
+        confess $object, " is not a Storm enabled object" if ! $object->does( 'Storm::Role::Object' );
         
         my $class = ref $object;
         my $identifier = $object->meta->primary_key->get_value($object);
@@ -70,7 +70,7 @@ method insert ( @objects ) {
     for my $object (@objects) {
         
         confess $object, " is not an object" if ! blessed $object;
-        confess $object, " is not a Storm enabled object" if ! $object->does('Storm::Role::Object::Base');
+        confess $object, " is not a Storm enabled object" if ! $object->does('Storm::Role::Object');
         
         my $class = ref $object;
         my $identifier = $object->meta->primary_key->get_value($object);

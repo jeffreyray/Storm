@@ -6,7 +6,7 @@ use Storm::Builder;
 use MooseX::Types::Moose qw( Int Str );
 use Test::More;
 
-__PACKAGE__->meta->set_table( 'Bazzle' );
+__PACKAGE__->meta->table( 'Bazzle' );
 is __PACKAGE__->meta->table->name, 'Bazzle', q[set class table];
 
 has 'identifier' => (

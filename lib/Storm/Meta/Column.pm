@@ -1,4 +1,4 @@
-package Storm::Schema::Column;
+package Storm::Meta::Column;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
@@ -9,7 +9,7 @@ use MooseX::Types::Moose qw( Bool Str Undef );
 
 has 'table' => (
     is => 'rw',
-    isa => 'Storm::Schema::Table',
+    isa => 'Storm::Meta::Table',
 );
 
 has 'name' => (

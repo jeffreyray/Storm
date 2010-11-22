@@ -1,7 +1,7 @@
-package Storm::Role::Object::Base;
+package Storm::Role::Object;
 
 use Moose::Role;
-use Storm::Schema::Table;
+use Storm::Meta::Table;
 
 use Storm::Types qw( Storm );
 use MooseX::Types::Moose qw( Undef );

@@ -11,7 +11,6 @@ use MooseX::Types::Moose qw( ArrayRef );
 
 use DBI;
 use Storm::Policy;
-use Storm::Source::Manager;
 
 
 has 'parameters' => (
@@ -24,23 +23,9 @@ has 'parameters' => (
     }
 );
 
-has 'policy' => (
-    is  => 'rw',
-    isa => StormPolicyObject,
-    default => sub { Storm::Policy::Object->new },
-    coerce => 1,
-);
-
-
 method set_parameters ( @params ) {
     $self->_set_parameters( \@params );
 }
-
-has 'manager' => (
-    is => 'rw',
-    isa => StormSourceManager,
-    lazy_build => 1,
-);
 
 has '_dbh' => (
     is  => 'rw',
@@ -63,11 +48,6 @@ sub BUILDARGS {
         return { parameters => \@_ };
     }
 }
-
-method _build_manager ( ) {
-    Storm::Source::Manager->new( source => $self );
-}
-
 
 
 # _params_from file:
@@ -94,12 +74,9 @@ sub _params_from_file {
     
     while(<$FILE>) {
         chomp;
-        my ($label, $params) = split '\|', $_;
-        
+        my ($label, @params) = split '\|', $_;
         # if we have a matching record, create the source object
         if ($label && $label eq $record) {
-            close $FILE;
-            my @params = split "\t", $params;
             return \@params;
         }
     }
@@ -150,7 +127,6 @@ method tables ( ) {
 }
 
 method auto_increment_token ( ) {
-    
     if ( $self->dbh->{sqlite_version} ) {
         return 'AUTOINCREMENT';
     }
@@ -159,6 +135,27 @@ method auto_increment_token ( ) {
     }
 }
 
+method disable_foreign_key_checks ( ) {
+    if ( $self->dbh->{sqlite_version} ) {
+        $self->dbh->do('PRAGMA foreign_keys = OFF;');
+        confess $self->dbh->errstr if $self->dbh->err;
+    }
+    else {
+        $self->dbh->do('SET FOREIGN_KEY_CHECKS = 0;');
+        confess $self->dbh->errstr if $self->dbh->err;
+    }
+}
+
+method enable_foreign_key_checks ( ) {
+    if ( $self->dbh->{sqlite_version} ) {
+        $self->dbh->do('PRAGMA foreign_keys = ON;');
+        confess $self->dbh->errstr if $self->dbh->err;
+    }
+    else {
+        $self->dbh->do('SET FOREIGN_KEY_CHECKS = 1;');
+        confess $self->dbh->errstr if $self->dbh->err;
+    }
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
@@ -205,8 +202,8 @@ will recognize anytime it is called with a singular argument starting with the
 one record per line, record name and connect args separated with a pipe
 character, and the individual connect arguments separated by tab characters. EX:
 
-  record1|DBI:mysql:database:address:3306    username    password
-  record2|DBI:mysql:testing:localhost:3306   tester      testing
+  record1|DBI:mysql:database:address:3306|username|password
+  record2|DBI:SQLite:dbname=:memory:
 
 =head2 $source->dbh
 

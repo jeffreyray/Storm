@@ -10,8 +10,6 @@ with 'Storm::Role::Query';
 with 'Storm::Role::Query::HasAttributeOrder';
 with 'Storm::Role::Query::IsExecutable';
 
-use Storm::Exceptions;
-
 method insert ( @objects ) {
     
     my $sth = $self->_sth; # exists in Storm::Role::Query::IsExecutable
@@ -39,9 +37,7 @@ method insert ( @objects ) {
         
         # throw exception if insert failed
         if ( $sth->err ) {
-            StormException->throw( error =>
-                qq[could not insert $o into database: ] . $sth->err
-            );
+            confess qq[could not insert $o into database: ] . $sth->err
         }
         
         # discover primary key if auto_increment

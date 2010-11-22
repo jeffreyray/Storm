@@ -50,3 +50,27 @@ sub remaining {
 
 no Moose::Role;
 1;
+
+
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Storm::Role::Iterator - Role for iterators
+
+=head1 AUTHOR
+
+Jeffrey Ray Hallock E<lt>jeffrey.hallock at gmail dot comE<gt>
+
+Modified from code in Dave Rolsky's L<Fey::ORM> module.
+
+=head1 COPYRIGHT
+
+    Copyright (c) 2010 Jeffrey Ray Hallock. All rights reserved.
+    This program is free software; you can redistribute it and/or
+    modify it under the same terms as Perl itself.
+
+=cut

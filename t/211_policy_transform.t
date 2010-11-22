@@ -19,7 +19,7 @@ transform DateTime,
 # build the testing class
 package Bazzle;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Bazzle' );
+__PACKAGE__->meta->table( 'Bazzle' );
 
 use Storm::Test::Types qw( DateTime );
 
@@ -33,9 +33,8 @@ use Scalar::Util qw(refaddr);
 use Storm;
 use Storm::LiveObjects;
 
-my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->set_policy( 'MyPolicy' );
-$storm->source->manager->install_class( 'Bazzle' );
+my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'], policy => 'MyPolicy'  );
+$storm->aeolus->install_class( 'Bazzle' );
 
 my $o = Bazzle->new( date => DateTime->now );
 $storm->insert( $o );

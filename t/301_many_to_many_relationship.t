@@ -4,16 +4,16 @@ use Test::More tests => 1;
 # build the testing classes
 package Artist;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Artists' );
+__PACKAGE__->meta->table( 'Artists' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'name' => ( is => 'rw' );
 
 has_many 'albums' => (
     foreign_class => 'Album',
-    primary_key => 'artist',
-    foreign_key => 'album',
-    linking_table => 'AlbumArtists',
+    junction_table => 'AlbumArtists',
+    local_match => 'artist',
+    foreign_match => 'album',
     handles => {
        'albums' => 'iter',
        'add_album' => 'add',
@@ -25,16 +25,16 @@ has_many 'albums' => (
 
 package Album;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Albums' );
+__PACKAGE__->meta->table( 'Albums' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'name' => ( is => 'rw' );
 
 has_many 'artists' => (
     foreign_class => 'Artist',
-    primary_key => 'album',
-    foreign_key => 'artist',
-    linking_table => 'AlbumArtists',
+    junction_table => 'AlbumArtists',
+    local_match => 'album',
+    foreign_match => 'artist',
     handles => {
        'artists' => 'iter',
        'add_artist' => 'add',
@@ -49,8 +49,8 @@ package main;
 use Storm;
 
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install_class( 'Album' );
-$storm->source->manager->install_class( 'Artist' );
+$storm->aeolus->install_class( 'Album' );
+$storm->aeolus->install_class( 'Artist' );
 
 
 my @artists;

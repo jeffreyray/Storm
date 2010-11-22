@@ -4,7 +4,7 @@ use Test::More tests => 3;
 # build the testing class
 package Bazzle;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Bazzle' );
+__PACKAGE__->meta->table( 'Bazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'foo' => ( is => 'rw' );
@@ -15,8 +15,8 @@ use Carp qw( confess );
 use Storm;
 
 my $storm = Storm->new( source => ['DBI:mysql:gtest:localhost:3306','tester','password'] );
-$storm->source->manager->uninstall;
-$storm->source->manager->install_class( 'Bazzle' );
+$storm->aeolus->start_fresh;
+$storm->aeolus->install_class( 'Bazzle' );
 
 
 my $txn = Storm::Transaction->new( $storm, sub {

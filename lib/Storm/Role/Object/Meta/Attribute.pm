@@ -1,7 +1,7 @@
 package Storm::Role::Object::Meta::Attribute;
 
 use Moose::Role;
-use Storm::Schema::Column;
+use Storm::Meta::Column;
 
 use Storm::Types qw( SchemaColumn );
 use MooseX::Types::Moose qw( Undef );

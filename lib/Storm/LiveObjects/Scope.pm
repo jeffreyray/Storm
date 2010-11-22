@@ -43,6 +43,7 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
+__END__
 
 =head1 NAME
 
@@ -80,7 +81,7 @@ Clears the objects from the scope object.
 
 =head1 SEE ALSO
 
-This code was borrowed from L<KiokuDB::LiveOBjects::Scope>
+Modified from code in L<KiokuDB::LiveOBjects::Scope> by Yuval Kogman.
 
 =cut
 

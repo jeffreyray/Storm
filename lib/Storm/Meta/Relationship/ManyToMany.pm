@@ -7,32 +7,32 @@ use MooseX::Types::Moose qw( Str Undef);
 
 extends 'Storm::Meta::Relationship';
 
-has 'linking_table' => (
+has 'junction_table' => (
     is => 'rw',
     isa => Str,
-    writer => '_set_linking_table',
+    writer => '_set_junction_table',
     required => 1
 );
 
-has 'primary_key' => (
+has 'local_match' => (
     is => 'rw' ,
     isa => Str|Undef,
-    writer => '_set_primary_key',
+    writer => '_set_local_match',
 );
 
-has 'foreign_key' => (
+has 'foreign_match' => (
     is => 'rw' ,
     isa => Str|Undef,
-    writer => '_set_foreign_key',
+    writer => '_set_foreign_match',
 );
 
 method _add_method ( $instance, @objects ) {
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
-    my $table = $self->linking_table;
-    my $primary_key = $self->primary_key ? $self->primary_key : $self->associated_class->meta->primary_key->column->name;
-    my $foreign_key = $self->foreign_key ? $self->foreign_key : $self->foreign_class->meta->primary_key->column->name;
+    my $table = $self->junction_table;
+    my $primary_key = $self->local_match ? $self->local_match : $self->associated_class->meta->primary_key->column->name;
+    my $foreign_key = $self->foreign_match? $self->foreign_match : $self->foreign_class->meta->primary_key->column->name;
     
     my $sth = $orm->source->dbh->prepare("INSERT INTO $table ($primary_key, $foreign_key) VALUES (?, ?)");
     eval {
@@ -49,9 +49,9 @@ method _remove_method ( $instance, @objects ) {
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
-    my $table = $self->linking_table;
-    my $primary_key = $self->primary_key ? $self->primary_key : $self->associated_class->meta->primary_key->column->name;
-    my $foreign_key = $self->foreign_key ? $self->foreign_key : $self->foreign_class->meta->primary_key->column->name;
+    my $table = $self->junction_table;
+    my $primary_key = $self->local_match ? $self->local_match  : $self->associated_class->meta->primary_key->column->name;
+    my $foreign_key = $self->foreign_match? $self->foreign_match : $self->foreign_class->meta->primary_key->column->name;
     
     my $sth = $orm->source->dbh->prepare("DELETE FROM $table WHERE $primary_key = ? AND $foreign_key = ?");
     
@@ -66,11 +66,11 @@ method _iter_method ( $instance ) {
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
-    my $link_table     = $self->linking_table;
+    my $link_table     = $self->junction_table;
     my $foreign_table  = $self->foreign_class->meta->table->name;
 
-    my $primary_key = $self->primary_key ? $self->primary_key : $self->associated_class->meta->primary_key->column->name;
-    my $foreign_key = $self->foreign_key ? $self->foreign_key : $self->foreign_class->meta->primary_key->column->name;
+    my $primary_key = $self->local_match ? $self->local_match  : $self->associated_class->meta->primary_key->column->name;
+    my $foreign_key = $self->foreign_match? $self->foreign_match : $self->foreign_class->meta->primary_key->column->name;
     my $foreign_primary_key = $self->foreign_class->meta->primary_key->column->name;
     
     my $query = $orm->select($self->foreign_class);

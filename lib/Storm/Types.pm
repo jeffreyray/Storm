@@ -2,16 +2,20 @@ package Storm::Types;
 use MooseX::Types -declare => [qw(
     DBIStatementHandle
     MooseAttribute
+    MooseMetaTypeConstraint
     SchemaColumn
     SchemaTable
     Storm
+    StormAeolus
     StormDeleteQuery
     StormEnabledClassName
+    StormEnabledObject
     StormInsertQuery
     StormLiveObjects
     StormLiveObjectScope
     StormLookupQuery
     StormMetaRelationship
+    StormObjectTypeConstraint
     StormPolicyObject
     StormSelectQuery
     StormSource
@@ -19,7 +23,7 @@ use MooseX::Types -declare => [qw(
     StormUpdateQuery
 )];
 
-use MooseX::Types::Moose qw( ArrayRef ClassName HashRef Str );
+use MooseX::Types::Moose qw( ArrayRef ClassName HashRef Object Str );
 
 class_type DBIStatementHandle,
     { class => 'DBI::st' };
@@ -27,35 +31,45 @@ class_type DBIStatementHandle,
 class_type MooseAttribute,
     { class => 'Moose::Meta::Attribute' };
 
+class_type MooseMetaTypeConstraint,
+    { class => 'Moose::Type::TypeConstraint' };
+
 class_type SchemaColumn,
-    { class => 'Storm::Schema::Column' };
+    { class => 'Storm::Meta::Column' };
     
 coerce SchemaColumn,
     from Str,
-    via { Storm::Schema::Column->new(name => $_) };
+    via { Storm::Meta::Column->new(name => $_) };
 
 coerce SchemaColumn,
     from HashRef,
-    via { Storm::Schema::Column->new( %$_ ) };
+    via { Storm::Meta::Column->new( %$_ ) };
 
     
 class_type SchemaTable,
-    { class => 'Storm::Schema::Table' };
+    { class => 'Storm::Meta::Table' };
     
 coerce SchemaTable,
     from Str,
-    via { Storm::Schema::Table->new( name => $_ ) };
+    via { Storm::Meta::Table->new( name => $_ ) };
     
     
 class_type Storm,
     { class => 'Storm' };
+
+class_type StormAeolus,
+    { class => 'Storm::Aeolus' };
     
 class_type StormDeleteQuery,
     { class => 'Storm::Query::Delete' };
 
 subtype StormEnabledClassName,
     as ClassName,
-    where { $_->can('meta') && $_->meta->does_role('Storm::Role::Object::Base') };
+    where { $_->can('meta') && $_->meta->does_role('Storm::Role::Object') };
+
+subtype StormEnabledObject,
+    as Object,
+    where { $_->can('meta') && $_->meta->does_role('Storm::Role::Object') };
     
 class_type StormInsertQuery,
     { class => 'Storm::Query::Insert' };
@@ -71,6 +85,14 @@ class_type StormMetaRelationship,
 
 class_type StormLookupQuery,
     { class => 'Storm::Query::Lookup' };
+    
+type StormObjectTypeConstraint,
+    where {
+        $_->can( 'class' ) &&
+        $_->class &&
+        $_->class->can( 'meta' ) &&
+        $_->class->meta->does_role( 'Storm::Role::Object' )
+    };
     
 class_type StormPolicyObject,
     { class => 'Storm::Policy::Object' };

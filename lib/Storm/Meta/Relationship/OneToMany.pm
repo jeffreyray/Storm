@@ -6,10 +6,10 @@ use MooseX::Method::Signatures;
 
 extends 'Storm::Meta::Relationship';
 
-has 'foreign_key' => (
+has 'match_on' => (
     is       => 'rw' ,
     isa      => 'Maybe[Str]',
-    writer   => '_set_foreign_key'  ,
+    writer   => '_set_match_on'  ,
 );
 
 
@@ -17,7 +17,7 @@ method _iter_method ( $instance ) {
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
-    my $foreign_key = $self->foreign_key ? $self->foreign_key : $self->associated_class->meta->primary_key->column->name;
+    my $foreign_key = $self->match_on ? $self->match_on : $self->associated_class->meta->primary_key->column->name;
    
     my $query = $orm->select_query($self->foreign_class);
     $query->where("`$foreign_key`", '=', $self->associated_class->meta->primary_key->get_value($instance));

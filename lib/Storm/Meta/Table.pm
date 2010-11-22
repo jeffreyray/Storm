@@ -1,4 +1,4 @@
-package Storm::Schema::Table;
+package Storm::Meta::Table;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;

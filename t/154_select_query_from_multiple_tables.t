@@ -4,7 +4,7 @@ use Test::More tests => 1;
 # build the testing class
 package Person;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'People' );
+__PACKAGE__->meta->table( 'People' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'position' => ( is => 'rw', isa => 'Position' );
@@ -12,7 +12,7 @@ has 'name' => ( is => 'rw' );
 
 package Position;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Positions' );
+__PACKAGE__->meta->table( 'Positions' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'title' => ( is => 'rw' );
@@ -26,8 +26,8 @@ package main;
 
 use Storm;
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install_class( 'Person' );
-$storm->source->manager->install_class( 'Position' );
+$storm->aeolus->install_class( 'Person' );
+$storm->aeolus->install_class( 'Position' );
 
 my $person = Person->new( name => 'Homer' );
 $storm->insert( $person );

@@ -131,3 +131,26 @@ method _add_and_if_needed ( ) {
 
 no Moose::Role;
 1;
+
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Storm::Role::Query::HasWhereClause - Role for queries with a WHERE clause
+
+=head1 AUTHOR
+
+Jeffrey Ray Hallock E<lt>jeffrey.hallock at gmail dot comE<gt>
+
+Modified from code in Dave Rolsky's L<Fey> module.
+
+=head1 COPYRIGHT
+
+    Copyright (c) 2010 Jeffrey Ray Hallock. All rights reserved.
+    This program is free software; you can redistribute it and/or
+    modify it under the same terms as Perl itself.
+
+=cut

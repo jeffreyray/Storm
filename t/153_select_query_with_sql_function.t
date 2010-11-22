@@ -17,7 +17,7 @@ define MyDate, 'DATE';
 # build the testing class
 package Person;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'People' );
+__PACKAGE__->meta->table( 'People' );
 
 
 
@@ -34,7 +34,7 @@ package main;
 
 use Storm;
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install_class( 'Person' );
+$storm->aeolus->install_class( 'Person' );
 
 my @test_info = (
     [qw/Marge  Simpson  /, '1991-01-01'],

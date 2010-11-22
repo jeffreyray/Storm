@@ -4,7 +4,7 @@ use Test::More tests => 5;
 # build the testing class
 package Bazzle;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Bazzle' );
+__PACKAGE__->meta->table( 'Bazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey )] );
 has 'foo' => ( is => 'rw' );
@@ -17,7 +17,7 @@ use Storm;
 use Storm::LiveObjects;
 
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install_class( 'Bazzle' );
+$storm->aeolus->install_class( 'Bazzle' );
 
 my $lo = $storm->live_objects;
 ok $lo, 'retrieved live objects';

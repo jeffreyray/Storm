@@ -4,7 +4,7 @@ use Test::More 'no_plan';
 # build the testing class
 package Bazzle;
 use Storm::Builder;
-__PACKAGE__->meta->set_table( 'Bazzle' );
+__PACKAGE__->meta->table( 'Bazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey )] );
 has 'foo' => ( is => 'rw' );
@@ -17,7 +17,7 @@ package main;
 
 use Storm;
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
-$storm->source->manager->install( *main::DATA );
+$storm->aeolus->install_class( 'Bazzle' );
 
 my $query = Storm::Query::Insert->new( $storm, 'Bazzle' );
 my $o = Bazzle->new( identifier => 1, foo => 'foo', bar => 'bar', baz => 'baz' );

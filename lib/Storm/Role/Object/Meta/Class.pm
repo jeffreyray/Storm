@@ -39,7 +39,7 @@ has 'relationships' => (
 after 'add_attribute' => sub {
     my ( $meta, $name ) = @_;
     my $att = blessed $name ? $name : $meta->get_attribute( $name );
-    $att->column->set_table( $meta->table ) if $att->column;
+    $att->column->set_table( $meta->table ) if $att->column && $meta->table;
     $meta->set_primary_key( $att ) if $att->does('PrimaryKey');
 };
 

@@ -1,6 +1,9 @@
 Changes for perl module Storm
 
-0.02 (ALPHA)
+0.04 (ALPHA)
+    - added StormSQLWhereBoolean type
+
+0.03 (ALPHA)
     - updated documentation
 
 0.02 (ALPHA)

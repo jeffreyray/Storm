@@ -4,13 +4,11 @@ use Moose;
 use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
 
-subtype 'TIMs::SQL::Types::WhereBoolean'
-    => as 'Str',
-    => where { return $_ =~ /^(?:and|not|or|xor)$/ };
+use Storm::Types qw( StormSQLWhereBoolean );
 
 has 'operator' => (
     is       => 'ro',
-    isa      => 'TIMs::SQL::Types::WhereBoolean',
+    isa      => StormSQLWhereBoolean,
     required => 1,
 );
 

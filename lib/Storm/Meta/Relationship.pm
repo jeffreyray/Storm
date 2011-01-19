@@ -62,7 +62,7 @@ method attach_to_class ( $meta ) {
     $meta->_add_relationship( $self->name, $self );
 }
 
-method detach_from_class {
+method detach_from_class ( $meta ) {
     return unless $self->associated_class();
     
     my $methods = $self->_handle_methods;

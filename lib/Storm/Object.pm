@@ -1,4 +1,4 @@
-package Storm::Builder;
+package Storm::Object;
 
 use Moose;
 use Moose::Exporter;
@@ -8,13 +8,15 @@ use Storm::Meta::Attribute::Trait::AutoIncrement;
 use Storm::Meta::Attribute::Trait::NoStorm;
 use Storm::Meta::Attribute::Trait::PrimaryKey;
 
+use Storm::Meta::Class::Trait::AutoTable;
+
 use Storm::Meta::Column;
 use Storm::Meta::Table;
 
 
 Moose::Exporter->setup_import_methods(
     also => 'Moose',
-    with_caller => [qw( has_many )],
+    with_caller => [qw( storm_table has_many one_to_many many_to_many )],
 );
 
 sub init_meta {
@@ -35,12 +37,49 @@ sub init_meta {
     );
 }
 
-sub has_many {
+sub storm_table {
+   my $caller = shift;
+   my $meta   = $caller->meta;
+   $meta->storm_table( @_ );
+}
+
+sub storm_label {
+    my $caller = shift;
+    my $meta = $caller->meta;
+    $meta->storm_label( $_ );
+}
+
+sub one_to_many {
     my $caller = shift;
     my $name   = shift;
     my $meta   = $caller->meta;
     my %params = @_;
     
+    $params{name} = $name;   
+    $meta->one_to_many( %params );
+}
+
+sub many_to_many {
+    my $caller = shift;
+    my $name   = shift;
+    my $meta   = $caller->meta;
+    my %params = @_;
+    
+    $params{name} = $name;
+    $meta->many_to_many( %params );
+}
+
+sub has_many {
+    my $caller = shift;
+    my $name   = shift;
+    my $meta   = $caller->meta;
+    my %params = @_;
+
+    warn q[Storm::has_many is deprecated - ] .
+    q[use Storm::one_to_many or ] .
+    q[Storm::many_to_many instead.];
+        
+
     $params{name} = $name;
     $meta->add_has_many(%params);
 }
@@ -55,12 +94,12 @@ __END__
 
 =head1 NAME
 
-Storm::Builder - Build objects to use with Storm
+Storm::Object - Build objects to use with Storm
 
 =head1 SYNOPSIS
 
     package Foo;
-    use Storm::Builder;  # provides Moose sugar
+    use Storm::Object;  # provides Moose sugar
 
     has 'id' => (
         isa => 'Int',
@@ -126,8 +165,8 @@ Storm::Builder - Build objects to use with Storm
 
 =head1 DESCRIPTION
 
-Storm::Builder is an extension of the C<Moose> object system. The purpose of
-Storm::Builder is to apply the necessary meta-roles Storm needs to introspect
+Storm::Object is an extension of the C<Moose> object system. The purpose of
+Storm::Object is to apply the necessary meta-roles Storm needs to introspect
 your objects and to provide sugar for declaring relationships between Storm
 enabled objects.
 

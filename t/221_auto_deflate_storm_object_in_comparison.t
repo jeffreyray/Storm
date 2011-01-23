@@ -3,8 +3,8 @@ use Test::More tests => 1;
     
 # build the testing classes
 package Frizzle;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Frizzle' );
+use Storm::Object;
+storm_table( 'Frizzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'frazzle' => ( is => 'rw', isa => 'Frazzle' );
@@ -12,8 +12,8 @@ has 'frazzle' => ( is => 'rw', isa => 'Frazzle' );
 
 
 package Frazzle;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Frazzle' );
+use Storm::Object;
+storm_table( 'Frazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 

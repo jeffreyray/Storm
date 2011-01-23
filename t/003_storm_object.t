@@ -2,12 +2,12 @@ use Test::More 'no_plan';
 
 
 package Bazzle;
-use Storm::Builder;
+use Storm::Object;
 use MooseX::Types::Moose qw( Int Str );
 use Test::More;
 
-__PACKAGE__->meta->table( 'Bazzle' );
-is __PACKAGE__->meta->table->name, 'Bazzle', q[set class table];
+storm_table( 'Bazzle' );
+is storm_table->name, 'Bazzle', q[set class table];
 
 has 'identifier' => (
     is => 'rw',

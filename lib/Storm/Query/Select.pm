@@ -37,7 +37,7 @@ method _from ( @tables ) {
 
 sub BUILD {
     my $self = shift;
-    $self->_from( $self->class->meta->table );
+    $self->_from( $self->class->meta->storm_table );
 }
 
 

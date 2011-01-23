@@ -2,15 +2,15 @@ use Test::More 'no_plan';
 
 
 package Bazzle;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Bazzle' );
+use Storm::Object;
+storm_table( 'Bazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey )] );
 has 'foo' => ( is => 'rw' );
 has 'bar' => ( is => 'rw' );
 has 'baz' => ( is => 'rw' );
 
-has_many 'bizzles' => (
+many_to_many 'bizzles' => (
     foreign_class => 'Bizzle',
     junction_table => 'BizzleBazzles',
     local_match => 'bazzle',
@@ -19,15 +19,15 @@ has_many 'bizzles' => (
 );
 
 package Bizzle;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Bizzle' );
+use Storm::Object;
+storm_table( 'Bizzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey )] );
 has 'foo' => ( is => 'rw' );
 has 'bar' => ( is => 'rw' );
 has 'baz' => ( is => 'rw' );
 
-has_many 'bazzles' => (
+many_to_many 'bazzles' => (
     foreign_class => 'Bazzle',
     junction_table => 'BizzleBazzles',
     local_match => 'bizzle',
@@ -35,8 +35,8 @@ has_many 'bazzles' => (
 );
 
 package Buzzle;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Buzzle' );
+use Storm::Object;
+storm_table( 'Buzzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey )] );
 has 'bizzle' => ( is => 'rw', isa => 'Bizzle' );

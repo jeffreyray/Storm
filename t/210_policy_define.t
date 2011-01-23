@@ -13,8 +13,8 @@ define DateTime, 'DATETIME';
 
 # build the testing class
 package Bazzle;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Bazzle' );
+use Storm::Object;
+storm_table( 'Bazzle' );
 
 use Storm::Test::Types qw( DateTime );
 

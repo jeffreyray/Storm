@@ -50,7 +50,7 @@ method _select_clause ( ) {
 }
 
 method _from_clause ( ) {
-    return 'FROM ' . $self->class->meta->table->sql;
+    return 'FROM ' . $self->class->meta->storm_table->sql;
 }
 
 method _where_clause ( ) {

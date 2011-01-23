@@ -42,7 +42,7 @@ method insert ( @objects ) {
         
         # discover primary key if auto_increment
         if ( $autoinc ) {
-            my $key = $orm->source->dbh->last_insert_id( undef, undef, $o->meta->table, undef );
+            my $key = $orm->source->dbh->last_insert_id( undef, undef, $o->meta->storm_table, undef );
             $primary_key->set_value( $o, $key );
         }
         
@@ -71,7 +71,7 @@ method _sql {
 
 
 method _insert_clause {
-    my $table = $self->class->meta->table;
+    my $table = $self->class->meta->storm_table;
     
     return 'INSERT INTO ' . $self->dbh->quote_identifier( $table->sql );
 }

@@ -36,7 +36,7 @@ method update ( @objects ) {
 }
 
 method _sql ( ) {
-    my $table = $self->class->meta->table->sql;
+    my $table = $self->class->meta->storm_table->sql;
     my $primary_key = $self->class->meta->primary_key->column->name;
     
     # NOTE: column->name should probably be column->sql, problem is that

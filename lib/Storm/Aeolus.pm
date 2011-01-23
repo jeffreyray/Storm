@@ -82,6 +82,7 @@ method install_class_table ( StormEnabledClassName $class ) {
     
     my $dbh = $self->storm->source->dbh;
     $dbh->do( $sql );
+    print $sql, "\n";
     confess $dbh->errstr if $dbh->err;
     return 1;
 }
@@ -107,12 +108,12 @@ method install_foreign_keys_to_class_table ( StormEnabledClassName $class ) {
         my ( $attr, $foreign_class ) = @$_;
         
         my $string = "\tADD FOREIGN KEY (" . $attr->column->name . ")\n";
-        $string .= "\t\tREFERENCES " . $foreign_class->meta->table->name;
+        $string .= "\t\tREFERENCES " . $foreign_class->meta->storm_table->name;
         $string .= '(' . $foreign_class->meta->primary_key->column->name . ')';
         push @key_statements, $string;
     }
     
-    my $sql = 'ALTER TABLE ' . $class->meta->table->name . "\n";
+    my $sql = 'ALTER TABLE ' . $class->meta->storm_table->name . "\n";
     $sql .= join ",\n", @key_statements;
     $sql .= ';';
     
@@ -140,11 +141,11 @@ method install_junction_tables ( StormEnabledClassName $class ) {
         
         my $sql = 'CREATE TABLE ' . $table . ' (' . "\n";
         $sql .= "\t" . $col1 . ' ' . $self->column_definition( $meta->primary_key ) . ",\n";
-        $sql .= "\t" . $col2 . ' ' . $self->column_definition( $r->foreign_class->meta->primary_key ) . ",\n";
-        $sql .= "\tFOREIGN KEY (" . $col1 . ") REFERENCES ";
-        $sql .= $r->foreign_class->meta->table->name . '(' . $r->foreign_class->meta->primary_key->column->name . "),\n";
-        $sql .= "\tFOREIGN KEY (" . $col2 . ") REFERENCES ";
-        $sql .= $meta->table->name . '(' . $meta->primary_key->column->name . ")\n";
+        $sql .= "\t" . $col2 . ' ' . $self->column_definition( $r->foreign_class->meta->primary_key ) . "\n";
+        #$sql .= "\tFOREIGN KEY (" . $col1 . ") REFERENCES ";
+        #$sql .= $r->foreign_class->meta->storm_table->name . '(' . $r->foreign_class->meta->primary_key->column->name . "),\n";
+        #$sql .= "\tFOREIGN KEY (" . $col2 . ") REFERENCES ";
+        #$sql .= $meta->storm_table->name . '(' . $meta->primary_key->column->name . ")\n";
         $sql .= ');';
         
         
@@ -163,14 +164,17 @@ method start_fresh ( ) {
 
 method table_definition ( StormEnabledClassName $class ) {
     my $meta = $class->meta;
-    my $table = $meta->table;
+    my $table = $meta->storm_table;
     
     
     my %defmap; # definition map
     
     # get the definition for each attribute
-    for my $attr ( map { $meta->get_attribute($_) } $meta->get_attribute_list ) {
-        next if ! $attr->column;
+    for my $attr ( $meta->get_all_attributes ) {
+        
+        # TODO: Change how we identify a sotrm column here
+        next if ! $attr->can('column') || ! $attr->column;
+        
         $defmap{ $attr->name } = {
             column => $attr->column,
             definition => $self->column_definition( $attr ),
@@ -199,15 +203,15 @@ method table_definition ( StormEnabledClassName $class ) {
     }
     
     # foreign key definitions
-    my @foreign_attributes = $self->find_foreign_attributes( $class );
-    for ( @foreign_attributes ) {
-        my ( $attr, $foreign_class ) = @$_;
-        
-        my $string = "\tFOREIGN KEY (" . $attr->column->name . ") ";
-        $string .= "REFERENCES " . $foreign_class->meta->table->name;
-        $string .= '(' . $foreign_class->meta->primary_key->column->name . ')';
-        push @key_statements, $string;
-    }
+    #my @foreign_attributes = $self->find_foreign_attributes( $class );
+    #for ( @foreign_attributes ) {
+    #    my ( $attr, $foreign_class ) = @$_;
+    #    
+    #    my $string = "\tFOREIGN KEY (" . $attr->column->name . ") ";
+    #    $string .= "REFERENCES " . $foreign_class->meta->storm_table->name;
+    #    $string .= '(' . $foreign_class->meta->primary_key->column->name . ')';
+    #    push @key_statements, $string;
+    #}
    
     $sql .= join ",\n", @definitions;
     $sql .= ",\n" . join(",\n", @key_statements) if @key_statements;
@@ -216,6 +220,12 @@ method table_definition ( StormEnabledClassName $class ) {
     return $sql;
 }
 
+
+method install_model ( $model ) {
+    for my $class ( $model->members ) {
+        $self->install_class( $class );
+    }
+}
 
 
 no Moose;
@@ -273,6 +283,10 @@ Installs the primary data table for the C<$class>.
 
 Installs any junction tables necessary to store relationship information between
 objects.
+
+=item install_model $class
+
+Calls C<install_class> for all members of the model;
 
 =back
 

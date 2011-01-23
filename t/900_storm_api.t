@@ -2,8 +2,8 @@ use Test::More tests => 15;
 
 
 package Bazzle;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Bazzle' );
+use Storm::Object;
+storm_table( 'Bazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey )] );
 has 'foo' => ( is => 'rw' );

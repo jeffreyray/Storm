@@ -11,9 +11,6 @@ has 'name' => ( is => 'rw' );
 
 many_to_many 'albums' => (
     foreign_class => 'Album',
-    junction_table => 'AlbumArtists',
-    local_match => 'artist',
-    foreign_match => 'album',
     handles => {
        'albums' => 'iter',
        'add_album' => 'add',
@@ -32,9 +29,6 @@ has 'name' => ( is => 'rw' );
 
 many_to_many 'artists' => (
     foreign_class => 'Artist',
-    junction_table => 'AlbumArtists',
-    local_match => 'album',
-    foreign_match => 'artist',
     handles => {
        'artists' => 'iter',
        'add_artist' => 'add',

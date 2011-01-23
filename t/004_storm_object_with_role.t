@@ -13,11 +13,11 @@ has 'foo' => (
 
 
 package Bazzle;
-use Storm::Builder;
+use Storm::Object;
 use MooseX::Types::Moose qw( Int Str );
 use Test::More;
 
-__PACKAGE__->meta->table( 'Bazzle' );
+storm_table( 'Bazzle' );
 
 with 'MyRole';
 

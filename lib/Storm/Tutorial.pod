@@ -29,15 +29,15 @@ the arguments passed to the L<Storm> constructor.
 L<Storm> is for storing Moose based objects. It is required that the objects
 have the L<Storm> roles and meta-roles applied.
 
-L<Storm::Builder> is an extension of L<Moose> which applies the appropriate roles
+L<Storm::Object> is an extension of L<Moose> which applies the appropriate roles
 and meta-roles, as well as providing some sugar for defining relationships.
 
 =head2 Simple example
 
 
  package Person;
- use Storm::Builder;
- __PACKAGE__->meta->table( 'Person' );
+ use Storm::Object;
+ storm_table( 'Person' );
 
  has 'id' => (
      is => 'rw',
@@ -82,8 +82,8 @@ setting the column option.
 =head2 Circular references
 
  package Person;
- use Storm::Builder;
- __PACKAGE__->meta->table( 'People' );
+ use Storm::Object;
+ storm_table( 'People' );
 
  has 'id' => (
      is => 'rw',
@@ -125,8 +125,8 @@ keyword.
 =head2 One-to-many
 
  package Person;
- use Storm::Builder;
- __PACKAGE__->meta->table( 'People' );
+ use Storm::Object;
+ storm_table( 'People' );
 
  has 'id' => (
      is => 'rw',
@@ -142,8 +142,8 @@ keyword.
  );
 
  package Pokemon;
- use Storm::Builder;
- __PACKAGE__->meta->table( 'Pokemon' ); 
+ use Storm::Object;
+ storm_->table( 'Pokemon' ); 
 
  has 'id' => (
      is => 'rw',
@@ -183,8 +183,8 @@ attribute to a C<$person>.
 =head2 Many-to-many
 
  package Person;
- use Storm::Builder;
- __PACKAGE__->meta->table( 'People' );
+ use Storm::Object;
+ storm_table( 'People' );
 
  has 'id' => (
      is => 'rw',
@@ -205,8 +205,8 @@ attribute to a C<$person>.
  )
 
  package Pet;
- use Storm::Builder;
- __PACKAGE__->meta->table( 'Pets' );
+ use Storm::Object;
+ storm_table( 'Pets' );
 
  has 'id' => (
      is => 'rw',
@@ -363,7 +363,7 @@ increasing their reference count.
 Let's define out person class to use as an example.
 
  package Person;
- use Storm::Builder;
+ use Storm::Object;
 
  has 'id' => (
      is => 'rw',

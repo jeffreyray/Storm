@@ -11,9 +11,9 @@ define DateTime, 'DATETIME';
     
 # build the testing class
 package Bazzle;
-use Storm::Builder;
+use Storm::Object;
 use DateTime::Format::SQLite;
-__PACKAGE__->meta->table( 'Bazzle' );
+storm_table( 'Bazzle' );
 
 use Storm::Test::Types qw( DateTime );
 

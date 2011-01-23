@@ -193,9 +193,9 @@ If you're new to L<Storm> check out L<Storm::Tutorial>.
 
     package Foo;
 
-    use Storm::Builder;
+    use Storm::Object;
 
-    __PACKAGE__->meta->table('Foo');
+    storm_table('Foo');
 
     has 'id' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 

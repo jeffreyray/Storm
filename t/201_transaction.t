@@ -3,8 +3,8 @@ use Test::More tests => 3;
 
 # build the testing class
 package Bazzle;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Bazzle' );
+use Storm::Object;
+storm_table( 'Bazzle' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'foo' => ( is => 'rw' );

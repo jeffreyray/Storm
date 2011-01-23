@@ -3,16 +3,16 @@ use Test::More tests => 1;
 
 # build the testing class
 package Person;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'People' );
+use Storm::Object;
+storm_table( 'People' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'position' => ( is => 'rw', isa => 'Position' );
 has 'name' => ( is => 'rw' );
 
 package Position;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'Positions' );
+use Storm::Object;
+storm_table( 'Positions' );
 
 has 'identifier' => ( is => 'rw', traits => [qw( PrimaryKey AutoIncrement )] );
 has 'title' => ( is => 'rw' );

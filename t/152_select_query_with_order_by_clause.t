@@ -3,8 +3,8 @@ use Test::More tests => 1;
 
 # build the testing class
 package Person;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'People' );
+use Storm::Object;
+storm_table( 'People' );
 
 use MooseX::Types::Moose qw( Int );
 

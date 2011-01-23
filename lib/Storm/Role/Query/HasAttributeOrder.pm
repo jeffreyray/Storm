@@ -21,9 +21,9 @@ method _build_attribute_order {
     my @order = ( $self->class->meta->primary_key );
     
     # create the attribute order
-    for my $attribute ( map { $meta->get_attribute($_) } $meta->get_attribute_list ) {
+    for my $attribute ( $meta->get_all_attributes ) {
         next if $attribute->name eq $order[0]->name; # skip if this is the primary key
-        next if ! $attribute->column;
+        next if ! $attribute->can('column') || ! $attribute->column;
         push @order, $attribute;
     }
 

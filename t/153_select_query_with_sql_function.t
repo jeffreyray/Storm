@@ -16,8 +16,8 @@ define MyDate, 'DATE';
 
 # build the testing class
 package Person;
-use Storm::Builder;
-__PACKAGE__->meta->table( 'People' );
+use Storm::Object;
+storm_table( 'People' );
 
 
 

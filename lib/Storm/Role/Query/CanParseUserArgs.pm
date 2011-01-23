@@ -62,7 +62,7 @@ sub args_to_sql_objects {
                             my $child_attr = $meta->get_attribute( $2 );
                             $_ = $child_attr->column;
                             
-                            $self->_from( $class->meta->table );
+                            $self->_from( $class->meta->storm_table );
                             $self->_link(  $attr, $class );
                         }
                         else {

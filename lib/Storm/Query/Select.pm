@@ -91,7 +91,8 @@ method results ( @args ) {
 
 
 method _select_clause ( ) {
-    return 'SELECT ' . CORE::join (', ', map { $_->column->sql } $self->attribute_order);
+    my $table = $self->class->meta->storm_table;
+    return 'SELECT ' . CORE::join (', ', map { $_->column->sql( $table ) } $self->attribute_order);
 }
 
 method _from_clause ( ) {

@@ -82,7 +82,6 @@ method install_class_table ( StormEnabledClassName $class ) {
     
     my $dbh = $self->storm->source->dbh;
     $dbh->do( $sql );
-    print $sql, "\n";
     confess $dbh->errstr if $dbh->err;
     return 1;
 }

@@ -3,6 +3,7 @@ use Moose::Role;
 use MooseX::Method::Signatures;
 use MooseX::Types::Moose qw( ArrayRef HashRef );
 
+use Storm::SQL::Column;
 use Storm::SQL::Literal;
 use Storm::SQL::Placeholder;
 use Storm::SQL::Fragment::Where::Boolean;
@@ -93,7 +94,9 @@ method _link ( $attr, $class ) {
     
     if ( ! $self->_has_link( $attr->name ) ) {
         # create the comparison
-        my $element = Storm::SQL::Fragment::Where::Comparison->new($attr->column, '=', $right_col);
+        my $column1 = Storm::SQL::Column->new( $self->class->meta->storm_table->name . '.' . $attr->column->name );
+        my $column2 = Storm::SQL::Column->new( $class->meta->storm_table->name . '.' . $class->meta->primary_key->column->name );
+        my $element = Storm::SQL::Fragment::Where::Comparison->new($column1, '=', $column2);
         $self->_add_and_if_needed;
         $self->_add_where_element($element);
         $self->_set_linked( $attr->name, 1 );

@@ -25,10 +25,14 @@ has 'auto_increment' => (
 );
 
 
-method sql {
-    $self->table ?
-    $self->table->name . '.' . $self->name :
+method sql ( $table? ) {
+    $table ?
+    $table->name . '.' . $self->name :
     $self->name;
+    
+    #$self->table ?
+    ##$self->table->name . '.' . $self->name :
+    ##$self->name;
 }
 
 no Moose;

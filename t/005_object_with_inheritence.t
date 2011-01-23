@@ -20,10 +20,6 @@ use Storm;
 
 my $storm = Storm->new( source => ['DBI:SQLite:dbname=:memory:'] );
 
-
-#my $foo->
-
-
 ok (Foo->meta->primary_key, 'Foo primary key set');
 ok (Foo::Bar->meta->primary_key, 'Foo::Bar primary key set');
 is (Foo::Bar->meta->primary_key, Foo->meta->primary_key, 'Foo key = Foo::Bar key');

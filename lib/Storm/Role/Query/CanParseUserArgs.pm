@@ -1,5 +1,6 @@
 package Storm::Role::Query::CanParseUserArgs;
 
+use Storm::SQL::Column;
 use Storm::SQL::Literal;
 use Storm::SQL::Placeholder;
 
@@ -24,7 +25,11 @@ sub args_to_sql_objects {
             elsif ( /^\.(\w+)$/) {
                 my $attname = $1;
                 if ( exists $map->{$1} ) {
-                    $_ = $map->{$1}->column;
+                    my $column = Storm::SQL::Column->new(
+                        $self->class->meta->storm_table->name . '.' . $map->{$1}->column->name
+                    );
+                    
+                    $_ = $column;
                 }
                 else {
                     confess qq[bad attribute $1];
@@ -60,7 +65,11 @@ sub args_to_sql_objects {
                             my $meta  = $class->meta;
                             
                             my $child_attr = $meta->get_attribute( $2 );
-                            $_ = $child_attr->column;
+                            my $column = Storm::SQL::Column->new(
+                                $meta->storm_table->name . '.' . $child_attr->column->name
+                            );
+                            
+                            $_ = $column;
                             
                             $self->_from( $class->meta->storm_table );
                             $self->_link(  $attr, $class );

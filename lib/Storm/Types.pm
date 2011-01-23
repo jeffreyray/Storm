@@ -20,6 +20,7 @@ use MooseX::Types -declare => [qw(
     StormSelectQuery
     StormSource
     StormSourceManager
+    StormSQLWhereBoolean
     StormUpdateQuery
 )];
 
@@ -56,6 +57,14 @@ coerce SchemaTable,
     
 class_type Storm,
     { class => 'Storm' };
+
+coerce Storm,
+    from HashRef,
+    via { Storm->new( %$_ ) };
+
+coerce Storm,
+    from ArrayRef,
+    via { Storm->new( source => $_->[0], policy => $_->[1] ) };
 
 class_type StormAeolus,
     { class => 'Storm::Aeolus' };
@@ -117,6 +126,11 @@ coerce StormSource,
 
 class_type StormSourceManager,
     { class => 'Storm::Source::Manager' };
+    
+subtype StormSQLWhereBoolean,
+    as Str,
+    where { return $_ =~ /^(?:and|not|or|xor)$/ };
+
 
 class_type StormUpdateQuery,
     { class => 'Storm::Query::Update' };

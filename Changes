@@ -1,6 +1,7 @@
 Changes for perl module Storm
 
 0.04 (ALPHA)
+<<<<<<< HEAD
 - added Storm::Model, for constructing models
 - added "install_model" method to aeolus
 - disabled installation of foreign_keys in "install_class" and
@@ -16,6 +17,12 @@ Changes for perl module Storm
 
 0.03 (ALPHA)
 - updated documentation
+=======
+    - added StormSQLWhereBoolean type
+
+0.03 (ALPHA)
+    - updated documentation
+>>>>>>> origin/master
 
 0.02 (ALPHA)
 - updated documentation

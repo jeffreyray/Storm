@@ -1,5 +1,10 @@
 Changes for perl module Storm
 
+
+0.05 (ALPHA)
+BUG FIXES:
+- fixed error when overriding properties of inherited attributes
+
 0.04.1 (ALPHA)
 - added ::SQL::Column class
 BUG FIXES:

@@ -60,7 +60,12 @@ has 'relationships' => (
 
 after 'add_attribute' => sub {
     my ( $meta, $name ) = @_;
+    return if $name =~ /^\+/;
+    
     my $att = blessed $name ? $name : $meta->get_attribute( $name );
+    
+    #print "---->", $name, "\n";
+    
     $att->column->set_table( $meta->storm_table ) if $att->column && $meta->storm_table;
     #$meta->set_primary_key( $att ) if $att->does('PrimaryKey');
 };

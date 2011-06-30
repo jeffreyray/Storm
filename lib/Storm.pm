@@ -1,6 +1,6 @@
 package Storm;
 
-our $VERSION = '0.04.1';
+our $VERSION = '0.05';
 our $AUTHORITY = 'cpan:JHALLOCK';
 
 use Moose;
@@ -385,12 +385,16 @@ L<Storm> has only been tested using MySQL and SQLite.
 
 Please report bugs by going to http://blue-aeolus.com/storm/
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Jeffrey Ray Hallock E<lt>jeffrey.hallock at gmail dot comE<gt>
 
+Dave Rolsky <autarch@urth.org>
+
+Yuval Kogman <nothingmuch@woobling.org>
+
 Special thanks to Yuval Kogman and Dave Rolsky, for who without their talented
-work and inspiration this library would not be possible.
+work and this library would not be possible.
 
 The code for managing the live object set and the scope relies on modified
 code written by Yuval Kogman for L<KiokuDB>. Documentation for this feature was
@@ -401,9 +405,14 @@ modified code written by Dave Rolsky for L<Fey> and L<Fey::ORM>.
 
 =head1 COPYRIGHT
 
-    Copyright (c) 2010 Jeffrey Ray Hallock. All rights reserved.
-    This program is free software; you can redistribute it and/or
-    modify it under the same terms as Perl itself.
+    Copyright (c) 2010-2011 Jeffrey Ray Hallock.
+    
+    Copyright (c) 2010-2011 Dave Rolsky.
+    
+    Copyright (c) 2008, 2009 Yuval Kogman, Infinity Interactive.
+    
+    All rights reserved. This program is free software; you can redistribute it
+    and/or modify it under the same terms as Perl itself.
 
 =cut
 

@@ -26,6 +26,8 @@ method column_definition ( MooseAttribute $attr ) {
     my $type_constraint = $attr->type_constraint;
     
     my $definition = $type_constraint ? undef : 'VARCHAR(64)';
+    $definition = $attr->define if defined $attr->define;
+    
     my $policy = $self->storm->policy;
     
     

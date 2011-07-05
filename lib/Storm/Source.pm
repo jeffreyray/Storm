@@ -31,7 +31,8 @@ has '_dbh' => (
     is  => 'rw',
     isa => 'DBI::db',
     reader => '_dbh' ,
-    writer => '_set_dbh'
+    writer => '_set_dbh',
+    clearer => '_clear_dbh',
 );
 
 
@@ -98,6 +99,14 @@ method dbh ( ) {
     $self->_set_dbh($dbh);
     return $dbh;
 }
+
+
+sub disconnect {
+    my ( $self ) = @_;
+    $self->_dbh->disconnect if ( $self->_dbh );
+    $self->_clear_dbh;
+}
+
 
 method tables ( ) {
     my @tables;

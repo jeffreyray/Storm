@@ -17,6 +17,11 @@ has 'transform' => (
     isa => 'Maybe[HashRef[CodeRef]]',
 );
 
+has 'define' => (
+    is => 'rw',
+    isa => 'Maybe[Str]',
+);
+
 
 # we need to play with the options before sending them
 # on to the attribute constructor

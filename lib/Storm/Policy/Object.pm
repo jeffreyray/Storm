@@ -40,6 +40,7 @@ sub BUILD {
     $self->add_definition( Any , 'CHAR(64)' );
     $self->add_definition( Num , 'DECIMAL(32,16)' );
     $self->add_definition( Int , 'INTEGER' );
+    $self->add_definition( Object, 'CHAR(256)' );
 }
 
 
@@ -70,7 +71,7 @@ method inflate_value ( $orm, $attr, $value, @args ) {
             my $function = $attr->transform->{inflate};
             {
                 local $_ = $value;
-                return &$function(@args);
+                return &$function($orm, @args);
             }
         }
         
@@ -97,7 +98,7 @@ method inflate_value ( $orm, $attr, $value, @args ) {
             my $function = $self->get_transformation($type_constraint->name)->{inflate};
             {
                 local $_ = $value;
-                return &$function(@args);
+                return &$function($orm, @args);
             }
         }
         

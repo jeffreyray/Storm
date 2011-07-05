@@ -133,9 +133,9 @@ keyword.
      traits => [qw(PrimaryKey AutoIncrement)],
  );
 
- has_many 'pokemon' => (
+ one_to_many 'pokemon' => (
     foreign_class => 'Pokemon',
-    foreign_key => 'master',
+    match_on => 'master',
     handles => {
         pokemon => 'iter',
     }
@@ -157,7 +157,7 @@ keyword.
  );
 
 Here, we define the components of a relationship between the Person class and
-the Pokemon class uing the C<has_many> keyword.
+the Pokemon class uing the C<one_to_many> keyword.
 
 =over 4
 
@@ -191,8 +191,7 @@ attribute to a C<$person>.
      traits => [qw(PrimaryKey AutoIncrement)],
  );
 
- has_many 'pets' => (
-     is => 'rw',
+ many_to_many 'pets' => (
      foreign_class => 'Pets',
      junction_table => 'PeoplesPets',
      local_match => 'person',
@@ -213,8 +212,7 @@ attribute to a C<$person>.
      traits => [qw(PrimaryKey AutoIncrement)],
  );
 
- has_many 'care_takers' => (
-     is => 'rw',
+ many_to_many 'care_takers' => (
      foreign_class => 'Pets',
      junction_table => 'PeoplesPets',
      local_match => 'person',
@@ -231,7 +229,7 @@ attribute to a C<$person>.
 =item
 
 In a I<many-to-many> relationship, a I<junction_table> is required to form the
-relationship. This is specified as an option to the C<has_many> keyword.
+relationship. This is specified as an option to the C<many_to_many> keyword.
 
 =item
 
@@ -249,6 +247,49 @@ pets/caretakers. C<< $pet-E<gt>add_care_taker( $person ) >> is synanamous with
 C<< $person-E<gt>add_pet( $pet ) >> and C<< $pet-E<gt>remove_care_taker( $person ) >>
 is synanamous with C<< $person-E<gt>remove_pet( $pet ) >>.
 
+=back
+
+=item
+
+As of version 0.05, L<Storm> will automatically fill in the C<junction_table>,
+C<local_match>, and forerign match if you do not supply them.
+
+ package Person;
+ use Storm::Object;
+ storm_table( 'People' );
+
+ has 'id' => (
+     is => 'rw',
+     traits => [qw(PrimaryKey AutoIncrement)],
+ );
+
+ many_to_many 'pets' => (
+     foreign_class => 'Pets',
+     handles => {
+         parents => 'iter',
+         add_pet => 'add',
+         remove_pet => 'remove',
+     }
+ )
+
+ package Pet;
+ use Storm::Object;
+ storm_table( 'Pets' );
+
+ has 'id' => (
+     is => 'rw',
+     traits => [qw(PrimaryKey AutoIncrement)],
+ );
+
+ many_to_many 'care_takers' => (
+     foreign_class => 'Pets',
+     handles => {
+         care_takers => 'iter',
+         add_care_taker => 'add',
+         remove_care_taker => 'remove',
+     }
+ )
+ 
 =back
 
 =head1 CRUD
@@ -546,18 +587,26 @@ classes need to store their data.
 
 See L<Storm::Aeolus> for more information.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Jeffrey Ray Hallock E<lt>jeffrey.hallock at gmail dot comE<gt>
 
+Dave Rolsky <autarch@urth.org>
+
+Yuval Kogman <nothingmuch@woobling.org>
+
 =head1 COPYRIGHT
 
-    Copyright (c) 2010 Jeffrey Ray Hallock. All rights reserved.
-    This program is free software; you can redistribute it and/or
-    modify it under the same terms as Perl itself.
+    Copyright (c) 2010-2011 Jeffrey Ray Hallock.
+
+    Copyright (c) 2010-2011 Dave Rolsky.
+
+    Copyright (c) 2008, 2009 Yuval Kogman, Infinity Interactive.
+
+    All rights reserved. This program is free software; you can redistribute it
+    and/or modify it under the same terms as Perl itself.
 
 =cut
-
 
 
 

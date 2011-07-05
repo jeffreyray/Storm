@@ -406,11 +406,11 @@ modified code written by Dave Rolsky for L<Fey> and L<Fey::ORM>.
 =head1 COPYRIGHT
 
     Copyright (c) 2010-2011 Jeffrey Ray Hallock.
-    
+
     Copyright (c) 2010-2011 Dave Rolsky.
-    
+
     Copyright (c) 2008, 2009 Yuval Kogman, Infinity Interactive.
-    
+
     All rights reserved. This program is free software; you can redistribute it
     and/or modify it under the same terms as Perl itself.
 

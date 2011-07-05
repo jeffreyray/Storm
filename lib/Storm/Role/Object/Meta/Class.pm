@@ -9,7 +9,7 @@ use Storm::Meta::Table;
 use Storm::Types qw( SchemaTable StormMetaRelationship );
 use Storm::Meta::Attribute::Trait::PrimaryKey;
 use MooseX::Types::Moose qw( HashRef Undef );
-use MooseX::Method::Signatures;
+
 
 has storm_table => (
     is        => 'rw' ,
@@ -18,7 +18,9 @@ has storm_table => (
     coerce    => 1,
 );
 
-method _build_storm_table {
+sub _build_storm_table {
+    my ( $self ) = @_;
+    
     my $table;
     for my $class ( ($self->class_precedence_list)[0..-1] ) {
         my $meta = $class->meta;
@@ -30,17 +32,10 @@ method _build_storm_table {
     }
 }
 
-#has 'primary_key' => (
-#    is        => 'rw',
-#    isa       => 'Moose::Meta::Attribute',
-#    reader    => 'primary_key'    ,
-#    writer    => 'set_primary_key',
-#    predicate => 'has_primary_key',
-#);
-
 
 # TODO: Cache this function, maybe rename it?
-method primary_key {
+sub primary_key {
+    my ( $self ) = @_;
     for my $att ( $self->get_all_attributes ) {
         return $att if $att->does( 'PrimaryKey' );
     }
@@ -62,20 +57,18 @@ after 'add_attribute' => sub {
     my ( $meta, $name ) = @_;
     return if $name =~ /^\+/;
     
-    my $att = blessed $name ? $name : $meta->get_attribute( $name );
-    
-    #print "---->", $name, "\n";
-    
+    my $att = blessed $name ? $name : $meta->get_attribute( $name );    
     $att->column->set_table( $meta->storm_table ) if $att->column && $meta->storm_table;
-    #$meta->set_primary_key( $att ) if $att->does('PrimaryKey');
 };
 
-method many_to_many ( %params ) {
+sub many_to_many {
+    my ( $self, %params ) = @_;
     my $relationship = Storm::Meta::Relationship::ManyToMany->new( %params );
     $relationship->attach_to_class( $self );
 }
 
-method one_to_many ( %params ) {
+sub one_to_many {
+    my ( $self, %params ) = @_;
     my $relationship = Storm::Meta::Relationship::OneToMany->new( %params );
     $relationship->attach_to_class( $self );
 }

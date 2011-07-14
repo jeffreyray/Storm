@@ -7,6 +7,7 @@ use MooseX::Types -declare => [qw(
     SchemaTable
     Storm
     StormAeolus
+    StormArrayRef
     StormDeleteQuery
     StormEnabledClassName
     StormEnabledObject
@@ -68,6 +69,9 @@ coerce Storm,
 
 class_type StormAeolus,
     { class => 'Storm::Aeolus' };
+    
+subtype StormArrayRef,
+    as ArrayRef;
     
 class_type StormDeleteQuery,
     { class => 'Storm::Query::Delete' };

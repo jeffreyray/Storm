@@ -7,6 +7,7 @@ use Moose::Util::MetaRole;
 use Storm::Meta::Attribute::Trait::AutoIncrement;
 use Storm::Meta::Attribute::Trait::NoStorm;
 use Storm::Meta::Attribute::Trait::PrimaryKey;
+use Storm::Meta::Attribute::Trait::StormArray;
 
 use Storm::Meta::Class::Trait::AutoTable;
 

@@ -6,7 +6,7 @@ use MooseX::SemiAffordanceAccessor;
 use MooseX::Method::Signatures;
 
 use MooseX::Types::Moose qw( :all );
-
+use Storm::Types qw( StormArrayRef );
 
 has '_definitions' => (
     is => 'ro',
@@ -41,6 +41,43 @@ sub BUILD {
     $self->add_definition( Num , 'DECIMAL(32,16)' );
     $self->add_definition( Int , 'INTEGER' );
     $self->add_definition( Object, 'CHAR(256)' );
+    
+    $self->add_definition( StormArrayRef, 'TEXT' );
+    $self->add_transformation( StormArrayRef, {
+        inflate => sub {
+            my ( $orm ) = @_;
+            
+            my $string = $_;
+            $string =~ s/\[|\]//g;
+            
+            my @objects;
+            for my $moniker ( split /,/, $string ) {
+                return undef if ! $moniker;
+                
+                my ( $class, $key ) = split /=/, $moniker;
+                
+                my $object = $orm->lookup( $class, $key );
+                
+                push @objects, $object;
+            }
+            
+            return \@objects;
+        },
+        deflate => sub {
+            my ( $orm ) = @_;
+            
+            my @values;
+            for my $object ( @$_ ) {
+                return undef if ! $object;
+                
+                my ( $class ) = split /=/, ref $object;
+                
+                push @values, join '=', $class, $object->meta->primary_key->get_value( $object );
+            }
+            
+            return '[' . join ( ',', @values ) . ']';
+        }
+    });
 }
 
 

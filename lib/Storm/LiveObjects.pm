@@ -26,8 +26,14 @@ has 'current_scope' => (
 );
 
 
-method get_object ( $class, $key ) {
+sub get_object {
+    my ( $self, $class, $key ) = @_;
     return $self->_objects->{$class}{$key};
+}
+
+sub has_object {
+    my ( $self, $class, $key ) = @_;
+    return $self->_objects->{$class}{$key} ? 1 : 0;
 }
 
 method remove ( @objects ) {   
@@ -101,9 +107,7 @@ method is_registered ( $object ) {
     return undef if ! defined $identifier;
     
     $self->_objects->{$class}{$identifier} &&
-    refaddr $self->_objects->{$class}{$identifier} == refaddr $object ?
-    1 :
-    0 ;
+    refaddr $self->_objects->{$class}{$identifier} == refaddr $object ? 1 : 0 ;
 }
 
 no Moose;

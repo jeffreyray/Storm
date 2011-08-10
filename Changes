@@ -1,5 +1,13 @@
 Changes for perl module Storm
 
+
+0.08
+- add "has_object" method to Storm::LiveObjects
+BUG FIXES:
+- fixed bug where refresh query was not working on objects with inherited attributes
+
+
+
 0.07
 - updated tutorial (section on creating relationships was outdated)
 

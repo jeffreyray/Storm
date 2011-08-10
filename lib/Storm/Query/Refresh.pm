@@ -3,7 +3,6 @@ package Storm::Query::Refresh;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 with 'Storm::Role::CanInflate';
 with 'Storm::Role::Query';
@@ -11,7 +10,8 @@ with 'Storm::Role::Query::HasAttributeOrder';
 with 'Storm::Role::Query::IsExecutable';
 
 
-method _sql {
+sub _sql {
+    my ( $self ) = @_;
     return join q[ ] ,
         $self->_select_clause,
         $self->_from_clause  ,
@@ -19,7 +19,9 @@ method _sql {
 }
 
 
-method refresh ( @objects ) {
+sub refresh {
+    
+    my ( $self, @objects ) = @_;
 
     for my $o (@objects) {
         my $id = $o->meta->primary_key->get_value( $o );
@@ -34,26 +36,25 @@ method refresh ( @objects ) {
         my %struct;
         my @attributes = $self->attribute_order;
         @data = $self->_inflate_values(\@attributes, \@data);
-        @struct{map {$_->name } $self->attribute_order} = @data;
-        
-        for (keys %struct) {
-            $o->meta->get_attribute($_)->set_value( $o, $struct{$_} );
-        }
+        $attributes[$_]->set_value( $o, $data[$_] ) for ( 0..$#attributes );
     }
     
     return 1;
 }
 
 
-method _select_clause ( ) {
+sub _select_clause  {
+    my ( $self ) = @_;
     return 'SELECT ' . join (', ', map { $_->column->sql } $self->attribute_order);
 }
 
-method _from_clause ( ) {
+sub _from_clause ( ) {
+    my ( $self ) = @_;
     return 'FROM ' . $self->class->meta->storm_table->sql;
 }
 
-method _where_clause ( ) {
+sub _where_clause ( ) {
+    my ( $self ) = @_;
     return 'WHERE ' . $self->class->meta->primary_key->column->sql . ' = ?';
 }
 

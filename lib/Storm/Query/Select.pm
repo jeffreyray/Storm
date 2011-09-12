@@ -3,7 +3,6 @@ package Storm::Query::Select;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 use Storm::Query::Select::Iterator;
 
@@ -30,7 +29,8 @@ has '_from_tables' => (
     }
 );
 
-method _from ( @tables ) {
+sub _from  {
+    my ( $self, @tables ) = @_;
     $self->_set_from_table( $_->name, $_ ) for @tables;
 }
 
@@ -42,7 +42,8 @@ sub BUILD {
 
 
 
-method _sql ( ) {   
+sub _sql {
+    my ( $self ) = @_;
     return join q[ ] ,
         $self->_select_clause  ,
         $self->_from_clause    ,
@@ -50,13 +51,15 @@ method _sql ( ) {
         $self->_order_by_clause,
 }
 
-method join ( $table ) {
+sub join {
+    my ( $self, $table ) = @_;
     $self->_set_join( $table );
     return $self;
 }
 
 
-method results ( @args ) {
+sub results  {
+    my ( $self, @args ) = @_;
     my @params = $self->bind_params;
     my @pass_values;
     
@@ -90,24 +93,28 @@ method results ( @args ) {
 }
 
 
-method _select_clause ( ) {
+sub _select_clause {
+    my ( $self ) = @_;
     my $table = $self->class->meta->storm_table;
     return 'SELECT ' . CORE::join (', ', map { $_->column->sql( $table ) } $self->attribute_order);
 }
 
-method _from_clause ( ) {
+sub _from_clause {
+    my ( $self ) = @_;
     my $sql  = 'FROM ';
     $sql .= CORE::join(", ", map { $_->sql } $self->_from_tables);
     $sql .= ' ' . $self->_join_clause if $self->_join;
     return $sql;
 }
 
-method _join_clause ( ) {
+sub _join_clause {
+    my ( $self ) = @_;
     return if ! defined $self->_join;
     return 'INNER JOIN ' . $self->_join;
 }
 
-method bind_params ( ) {
+sub bind_params {
+    my ( $self ) = @_;
     return
         ( map { $_->bind_params() }
           grep { $_->can('bind_params') }

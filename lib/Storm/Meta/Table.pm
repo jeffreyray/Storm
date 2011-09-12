@@ -3,7 +3,6 @@ package Storm::Meta::Table;
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 has 'name' => (
     is   => 'ro' ,
@@ -11,13 +10,9 @@ has 'name' => (
     required => 1,
 );
 
-method sql ( ) {
-    $self->name;
-}
+sub sql {  $_[0]->name }
 
-method schema {
-    undef;
-}
+sub schema { undef }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

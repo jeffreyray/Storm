@@ -3,7 +3,6 @@ package Storm::SQL::Function;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 use MooseX::Types::Moose qw( ArrayRef Str );
 
@@ -35,7 +34,8 @@ sub BUILDARGS
     
 }
 
-method sql {
+sub sql {
+    my ( $self ) = @_;
     my $sql = '';
     $sql .= uc $self->function;
     $sql .= '(';
@@ -44,7 +44,8 @@ method sql {
     return $sql;
 }
 
-method bind_params ( ) {
+sub bind_params {
+    my ( $self ) = @_;
     return
         ( map { $_->bind_params() }
           grep { $_->can('bind_params') }

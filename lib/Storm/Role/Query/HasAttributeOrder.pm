@@ -1,7 +1,6 @@
 package Storm::Role::Query::HasAttributeOrder;
 
 use Moose::Role;
-use MooseX::Method::Signatures;
 use MooseX::Types::Moose qw( ArrayRef );
 
 
@@ -14,7 +13,8 @@ has 'attribute_order' => (
     }
 );
 
-method _build_attribute_order {
+sub _build_attribute_order {
+    my ( $self ) = @_;
     my $meta = $self->class->meta;
     
     # make sure the primary key is the first entry in the order

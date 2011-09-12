@@ -1,7 +1,6 @@
 package Storm::Meta::Relationship::ManyToMany;
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 use MooseX::Types::Moose qw( Str Undef);
 
@@ -28,25 +27,30 @@ has 'foreign_match' => (
     lazy_build => 1,
 );
 
-method _build_junction_table {
+sub _build_junction_table {
+    my ( $self ) = @_;
     my $local = $self->associated_class->meta->storm_table->name;
     my $foreign = $self->foreign_class->meta->storm_table->name;
     return join '_', sort $local, $foreign;
 }
 
-method _build_local_match {
+sub _build_local_match {
+    my ( $self ) = @_;
     my $table = $self->associated_class->meta->storm_table->name;
     my $column = $self->associated_class->meta->primary_key->column->name;
     return $table . '_' . $column;
 }
 
-method _build_foreign_match {
+sub _build_foreign_match {
+    my ( $self ) = @_;
     my $table = $self->foreign_class->meta->storm_table->name;
     my $column = $self->foreign_class->meta->primary_key->column->name;
     return $table . '_' . $column;
 }
 
-method _add_method ( $instance, @objects ) {
+sub _add_method  {
+    my ( $self, $instance, @objects ) = @_;
+    
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
@@ -65,7 +69,9 @@ method _add_method ( $instance, @objects ) {
     return 1;
 }
 
-method _remove_method ( $instance, @objects ) {
+sub _remove_method  {
+    my ( $self, $instance, @objects ) = @_;
+    
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
@@ -82,7 +88,9 @@ method _remove_method ( $instance, @objects ) {
     return 1;
 }
 
-method _iter_method ( $instance ) {
+sub _iter_method   {
+    my ( $self, $instance ) = @_;
+    
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
@@ -101,7 +109,8 @@ method _iter_method ( $instance ) {
 }
 
 
-method _build_handle_methods ( ) {
+sub _build_handle_methods  {
+    my ( $self ) = @_;
     my %methods;
     
     for my $method_name ($self->_handles) {

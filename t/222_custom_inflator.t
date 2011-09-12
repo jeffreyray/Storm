@@ -12,11 +12,9 @@ has 'foo' => (
     isa => 'Str',
     transform => {
         inflate => sub {
-            print "-----", @_, "\n";
             return 'WHAT';
         },
         deflate => sub {
-            print print ".......", @_, "\n";
             return $_;
         }
     }

@@ -1,6 +1,10 @@
 Changes for perl module Storm
 
 
+0.09
+- removed use of MooseX::Method::Signatures
+
+
 0.08
 - add "has_object" method to Storm::LiveObjects
 BUG FIXES:

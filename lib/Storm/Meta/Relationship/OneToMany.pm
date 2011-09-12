@@ -2,7 +2,6 @@ package Storm::Meta::Relationship::OneToMany;
 
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 extends 'Storm::Meta::Relationship';
 
@@ -13,7 +12,9 @@ has 'match_on' => (
 );
 
 
-method _iter_method ( $instance ) {
+sub _iter_method {
+    my ( $self, $instance ) = @_;
+    
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
@@ -25,8 +26,8 @@ method _iter_method ( $instance ) {
 }
 
 
-method _build_handle_methods ( ) {
-    
+sub _build_handle_methods {
+    my ( $self ) = @_;
     my %methods;
     
     for my $method_name ($self->_handles) {

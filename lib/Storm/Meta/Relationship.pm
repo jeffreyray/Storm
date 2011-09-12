@@ -2,7 +2,6 @@ package Storm::Meta::Relationship;
 
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 use MooseX::Types::Moose qw( HashRef );
 
@@ -48,7 +47,8 @@ has '_handle_methods' => (
 
 
 
-method attach_to_class ( $meta ) {
+sub attach_to_class {
+    my ( $self, $meta ) = @_;
     my $class = $meta->name;
     
     $self->_set_associated_class($class);
@@ -62,7 +62,8 @@ method attach_to_class ( $meta ) {
     $meta->_add_relationship( $self->name, $self );
 }
 
-method detach_from_class ( $meta ) {
+sub detach_from_class {
+    my ( $self, $meta ) = @_;
     return unless $self->associated_class();
     
     my $methods = $self->_handle_methods;

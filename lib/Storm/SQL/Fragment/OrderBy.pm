@@ -32,8 +32,7 @@ sub BUILDARGS
     
 }
 
-sub sql
-{
+sub sql {
     my $self = shift;
     my $sql = '';
     $sql = $self->_column->sql . ' ' . $self->_order;

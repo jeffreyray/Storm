@@ -3,19 +3,20 @@ package Storm::Query::Delete;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 with 'Storm::Role::Query';
 with 'Storm::Role::Query::IsExecutable';
 
-method _sql ( ) {
+sub _sql {
+    my ( $self ) = @_;
     my $table = $self->class->meta->storm_table->sql;
     my $column = $self->class->meta->primary_key->column->sql;
     return  qq[DELETE FROM $table WHERE $column = ?];
 }
 
 
-method delete ( @objects ) {
+sub delete  {
+    my ( $self, @objects ) = @_;
     my $sth     = $self->_sth;
     
     for my $o (@objects) {

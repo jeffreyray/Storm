@@ -2,7 +2,6 @@ package Storm::LiveObjects;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 use Storm::LiveObjects::Scope;
 use Scalar::Util qw(weaken refaddr);
@@ -35,8 +34,8 @@ sub has_object {
     my ( $self, $class, $key ) = @_;
     return $self->_objects->{$class}{$key} ? 1 : 0;
 }
-
-method remove ( @objects ) {   
+sub remove {
+    my ( $self, @objects ) = @_;
     my $scope = $self->current_scope or confess "no open live object scope";
     
     for my $object (@objects) {
@@ -56,7 +55,8 @@ method remove ( @objects ) {
     }
 }
 
-method new_scope ( ) {
+sub new_scope {
+    my ( $self ) = @_;
     my $parent = $self->current_scope;
 
     my $scope = Storm::LiveObjects::Scope->new(
@@ -70,7 +70,8 @@ method new_scope ( ) {
 }
 
 
-method insert ( @objects ) {    
+sub insert {
+    my ( $self, @objects ) = @_;
     my $scope = $self->current_scope or confess "no open live object scope";
     
     for my $object (@objects) {
@@ -97,11 +98,13 @@ method insert ( @objects ) {
     }
 }
 
-method clear ( ) {
+sub clear {
+    my ( $self ) = @_;
     %{ $self->_objects } = ();
 }
 
-method is_registered ( $object ) {
+sub is_registered {
+    my ( $self, $object ) = @_;
     my $class = ref $object;
     my $identifier = $object->meta->primary_key->get_value($object);
     return undef if ! defined $identifier;

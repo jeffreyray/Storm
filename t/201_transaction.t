@@ -1,4 +1,11 @@
-use Test::More tests => 3;
+use Test::More;
+
+if( ! $ENV{AUTHOR_TEST} ) {
+    plan skip_all => 'Tests run for module author only.';
+}
+else {
+    plan tests => 3;
+}
 
 
 # build the testing class

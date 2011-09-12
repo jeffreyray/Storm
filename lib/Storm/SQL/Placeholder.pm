@@ -2,7 +2,6 @@ package Storm::SQL::Placeholder;
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 has 'value' => (
     is => 'rw',
@@ -10,11 +9,12 @@ has 'value' => (
     clearer => 'clear_value',
 );
 
-method sql ( ) {
+sub sql {
     return '?';
 }
 
-method bind_params ( ) {
+sub bind_params  {
+    my ( $self ) = @_;
     return $self->has_value ? $self->value : ( );
 }
 

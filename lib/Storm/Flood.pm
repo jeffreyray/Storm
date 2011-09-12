@@ -3,7 +3,6 @@ package Storm::Flood;
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 use Storm::Types qw(
 Storm

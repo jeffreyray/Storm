@@ -3,15 +3,14 @@ package Storm::Query::Insert;
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 with 'Storm::Role::CanDeflate';
 with 'Storm::Role::Query';
 with 'Storm::Role::Query::HasAttributeOrder';
 with 'Storm::Role::Query::IsExecutable';
 
-method insert ( @objects ) {
-    
+sub insert {
+    my ( $self, @objects ) = @_;
     my $sth = $self->_sth; # exists in Storm::Role::Query::IsExecutable
     
     my @attributes = $self->attribute_order;
@@ -60,7 +59,8 @@ method insert ( @objects ) {
 
 
 
-method _sql {   
+sub _sql {
+    my ( $self ) = @_;
     return (
         join ' ',
         $self->_insert_clause,
@@ -70,13 +70,15 @@ method _sql {
 }
 
 
-method _insert_clause {
+sub _insert_clause {
+    my ( $self ) = @_;
     my $table = $self->class->meta->storm_table;
     
     return 'INSERT INTO ' . $self->dbh->quote_identifier( $table->sql );
 }
 
-method _columns_clause {
+sub _columns_clause {
+    my ( $self ) = @_;
     my $dbh  = $self->dbh;
     
     return '(' .
@@ -84,7 +86,8 @@ method _columns_clause {
     ')';
 }
 
-method _values_clause {
+sub _values_clause {
+    my ( $self ) = @_;
     my $dbh  = $self->dbh;
     
     return 'VALUES (' .

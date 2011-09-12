@@ -21,7 +21,6 @@ This module requires these other modules and libraries:
     Moose
     MooseX::SemiAffordanceAccessor
     MooseX::StrictConstrctor
-    MooseX::Method::Signatures
     MooseX::Types
     
 

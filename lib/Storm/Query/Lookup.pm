@@ -3,7 +3,6 @@ package Storm::Query::Lookup;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 with 'Storm::Role::CanInflate';
 with 'Storm::Role::Query';
@@ -11,7 +10,8 @@ with 'Storm::Role::Query::HasAttributeOrder';
 with 'Storm::Role::Query::IsExecutable';
 
 
-method _sql ( ) {    
+sub _sql  {
+    my ( $self ) = @_;
     return join q[ ] ,
         $self->_select_clause,
         $self->_from_clause  ,
@@ -19,7 +19,8 @@ method _sql ( ) {
 }
 
 
-method lookup ( $id ) {
+sub lookup {
+    my ( $self, $id ) = @_;
 
     # see if the object exists in the live object cache
     my $live = $self->orm->live_objects;
@@ -48,15 +49,18 @@ method lookup ( $id ) {
 }
 
 
-method _select_clause ( ) {
+sub _select_clause {
+    my ( $self ) = @_;
     return 'SELECT ' . join (', ', map { $_->column->sql } $self->attribute_order);
 }
 
-method _from_clause ( ) {
+sub _from_clause {
+    my ( $self ) = @_;
     return 'FROM ' . $self->class->meta->storm_table->sql;
 }
 
-method _where_clause ( ) {
+sub _where_clause {
+    my ( $self ) = @_;
     return 'WHERE ' . $self->class->meta->primary_key->column->sql . ' = ?';
 }
 

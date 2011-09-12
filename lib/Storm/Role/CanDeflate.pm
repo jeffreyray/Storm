@@ -1,9 +1,9 @@
 package Storm::Role::CanDeflate;
 
 use Moose::Role;
-use MooseX::Method::Signatures;
 
-method _deflate_values ( $atts_ref, $values_ref ) {
+sub _deflate_values {
+    my ( $self, $atts_ref, $values_ref ) = @_;
 
     my @deflated_values;    
     for my $i( 0..$#{$atts_ref} ) {

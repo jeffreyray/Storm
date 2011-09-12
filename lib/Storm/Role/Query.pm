@@ -3,7 +3,6 @@ use Moose::Role;
 
 use Storm::Types qw( Storm );
 use MooseX::Types::Moose qw( ClassName );
-use MooseX::Method::Signatures;
 
 has 'orm' => (
     is  => 'ro',
@@ -30,8 +29,8 @@ sub BUILDARGS {
     }
 }
 
-method dbh ( ) {
-    $self->orm->source->dbh;
+sub dbh  {
+    $_[0]->orm->source->dbh;
 }
 
 no Moose::Role;

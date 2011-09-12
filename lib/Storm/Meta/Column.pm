@@ -3,7 +3,6 @@ package Storm::Meta::Column;
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 use MooseX::Types::Moose qw( Bool Str Undef );
 
@@ -25,14 +24,9 @@ has 'auto_increment' => (
 );
 
 
-method sql ( $table? ) {
-    $table ?
-    $table->name . '.' . $self->name :
-    $self->name;
-    
-    #$self->table ?
-    ##$self->table->name . '.' . $self->name :
-    ##$self->name;
+sub sql  {
+    my ( $self, $table ) = @_;
+    $table ? $table->name . '.' . $self->name :  $self->name;
 }
 
 no Moose;

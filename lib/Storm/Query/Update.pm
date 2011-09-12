@@ -3,14 +3,14 @@ package Storm::Query::Update;
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 with 'Storm::Role::CanDeflate';
 with 'Storm::Role::Query';
 with 'Storm::Role::Query::HasAttributeOrder';
 with 'Storm::Role::Query::IsExecutable';
 
-method update ( @objects ) {
+sub update {
+    my ( $self, @objects ) = @_;
     my $sth  = $self->_sth;
     
     my @attributes = $self->attribute_order;
@@ -35,7 +35,8 @@ method update ( @objects ) {
     return 1;
 }
 
-method _sql ( ) {
+sub _sql {
+    my ( $self ) = @_;
     my $table = $self->class->meta->storm_table->sql;
     my $primary_key = $self->class->meta->primary_key->column->name;
     

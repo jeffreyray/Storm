@@ -1,7 +1,6 @@
 package Storm::Role::Query::HasOrderByClause;
 
 use Moose::Role;
-use MooseX::Method::Signatures;
 use MooseX::Types::Moose qw( ArrayRef );
 
 with 'Storm::Role::Query::HasAttributeMap';
@@ -20,7 +19,8 @@ has '_order_by' => (
     }
 );
 
-method order_by ( @args ) {
+sub order_by {
+    my ( $self, @args ) = @_;
     my @elements;
     my $map = $self->_attribute_map;
     
@@ -36,7 +36,8 @@ method order_by ( @args ) {
     return $self;
 }
 
-method _order_by_clause {
+sub _order_by_clause {
+    my ( $self ) = @_;
     return if $self->_has_no_order_by_elements;
     
     my $sql = 'ORDER BY ';

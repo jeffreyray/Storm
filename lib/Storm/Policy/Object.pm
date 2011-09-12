@@ -3,7 +3,6 @@ package Storm::Policy::Object;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 use MooseX::Types::Moose qw( :all );
 use Storm::Types qw( StormArrayRef );
@@ -40,7 +39,7 @@ sub BUILD {
     $self->add_definition( Any , 'CHAR(64)' );
     $self->add_definition( Num , 'DECIMAL(32,16)' );
     $self->add_definition( Int , 'INTEGER' );
-    $self->add_definition( Object, 'CHAR(256)' );
+    $self->add_definition( Object, 'CHAR(255)' );
     
     $self->add_definition( StormArrayRef, 'TEXT' );
     $self->add_transformation( StormArrayRef, {
@@ -81,7 +80,8 @@ sub BUILD {
 }
 
 
-method inflate_value ( $orm, $attr, $value, @args ) {
+sub inflate_value {
+    my ( $self, $orm, $attr, $value, @args ) = @_;
     
     # do nothing if there is not a type constraint
     return $value if ! $attr->has_type_constraint;
@@ -149,7 +149,8 @@ method inflate_value ( $orm, $attr, $value, @args ) {
     }
 }
 
-method deflate_value ( $attr, $value, @args ) {
+sub deflate_value  {
+    my ( $self, $attr, $value, @args ) = @_;
     
     # do nothing if there is not type constraint
     return $value if ! $attr->has_type_constraint;

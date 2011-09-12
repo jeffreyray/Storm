@@ -1,12 +1,11 @@
 package Storm;
 
-our $VERSION = '0.07';
+our $VERSION = '0.09';
 our $AUTHORITY = 'cpan:JHALLOCK';
 
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 use Storm::Aeolus;
 use Storm::LiveObjects;
@@ -49,7 +48,8 @@ has 'source' => (
     coerce => 1,
 );
 
-method delete ( @objects ) {
+sub delete {
+    my ( $self, @objects ) = @_;
     my %queries;
     
     for my $o ( @objects ) {
@@ -63,19 +63,24 @@ method delete ( @objects ) {
 
 
 
-method delete_query ( ClassName $class ) {
+sub delete_query {
+    my ( $self, $class ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
     Storm::Query::Delete->new( $self, $class );
 }
 
 
 
-method do_transaction ( CodeRef $code ) {
+sub do_transaction {
+    my ( $self, $code ) = @_;
     $self->new_transaction($code)->commit;
 }
 
 
 
-method insert ( @objects ) {
+sub insert  {
+    my ( $self, @objects ) = @_;
+    
     my %queries;
     
     for my $o ( @objects ) {
@@ -89,13 +94,18 @@ method insert ( @objects ) {
 
 
 
-method insert_query ( ClassName $class ) {
+sub insert_query {
+    my ( $self, $class ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
     Storm::Query::Insert->new( $self, $class );
 }
 
 
 
-method lookup ( ClassName $class, @ids ) {
+sub lookup  {
+    my ( $self, $class, @ids ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
+    
     my $q = $self->lookup_query( $class );
     my @objects = map { $q->lookup( $_ ) } @ids;
     
@@ -107,23 +117,27 @@ method lookup ( ClassName $class, @ids ) {
     }
 }
 
-
-method lookup_query ( ClassName $class ) {
+sub lookup_query {
+    my ( $self, $class ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
     Storm::Query::Lookup->new( $self, $class );
 }
 
 
-method new_scope ( ) {
+sub new_scope {
+    my ( $self ) = @_;
     $self->live_objects->new_scope;
 }
 
 
-method new_transaction ( CodeRef $code ) {
+sub new_transaction {
+    my ( $self, $code ) = @_;
     Storm::Transaction->new( $self, $code );
 }
 
 
-method refresh ( @objects ) {
+sub refresh  {
+    my ( $self, @objects ) = @_;
     my %queries;
     
     for my $o ( @objects ) {
@@ -137,25 +151,32 @@ method refresh ( @objects ) {
 
 
 
-method refresh_query ( ClassName $class ) {
+sub refresh_query {
+    my ( $self, $class ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
     Storm::Query::Refresh->new( $self, $class );
 }
 
 
 
-method select ( ClassName $class, @options ) {
+sub select {
+    my ( $self, $class, @options ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
     $self->select_query( $class );
 }
 
 
 
-method select_query ( ClassName $class ) {
+sub select_query {
+    my ( $self, $class ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
     Storm::Query::Select->new( $self, $class );
 }
 
 
 
-method update ( @objects ) {
+sub update {
+    my ( $self, @objects ) = @_;
     my %queries;
     
     for my $o ( @objects ) {
@@ -167,7 +188,9 @@ method update ( @objects ) {
     return 1;
 }
 
-method update_query ( ClassName $class ) {
+sub update_query {
+    my ( $self, $class ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
     Storm::Query::Update->new( $self, $class );
 }
 

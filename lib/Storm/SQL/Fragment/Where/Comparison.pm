@@ -3,7 +3,6 @@ package Storm::SQL::Fragment::Where::Comparison;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;
-use MooseX::Method::Signatures;
 
 use MooseX::Types::Moose qw( ArrayRef Str );
 
@@ -43,7 +42,8 @@ sub BUILDARGS
     };
 }
 
-method sql ( ) {
+sub sql  {
+    my $self = shift;
     my $sql = '';
     
     # standard operators = != < <= => >
@@ -104,11 +104,10 @@ method sql ( ) {
     return $sql;
 }
 
-method bind_params ( ) {
+sub bind_params {
+    my $self = shift;
     return
-        ( map { $_->bind_params() }
-          grep { $_->can('bind_params') }
-          $self->_left_arg, @{$self->_right_args}
+        ( map { $_->bind_params() } grep { defined $_ && $_->can('bind_params') } $self->_left_arg, @{$self->_right_args}
         );
 }
 

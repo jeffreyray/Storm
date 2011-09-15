@@ -24,7 +24,6 @@ sub _build_storm_table {
     my $table;
     for my $class ( ($self->class_precedence_list)[0..-1] ) {
         my $meta = $class->meta;
-        print $meta->name, ' - ';
         if ( $meta->can('storm_table') && $meta->has_storm_table ) {
             $table = $meta->storm_table;
             last if $table;

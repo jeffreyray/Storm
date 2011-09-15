@@ -190,7 +190,7 @@ Storm::Source - Always produces active database handles on request
 
  $source = Storm::Source->new(['DBI:mysql:database:3306', 'user', 'pass']);
 
- $source = Gi::DBISource->new('@file.txt|record');
+ $source = Storm::Source->new('@file.txt|record');
 
  $dbh = $source->dbh;
   

@@ -9,6 +9,7 @@ use Storm::Query::Select::Iterator;
 use MooseX::Types::Moose qw( HashRef Str );
 
 with 'Storm::Role::Query';
+with 'Storm::Role::Query::HasBindParams';
 with 'Storm::Role::Query::HasWhereClause';
 with 'Storm::Role::Query::HasOrderByClause';
 with 'Storm::Role::Query::HasAttributeOrder';
@@ -60,35 +61,8 @@ sub join {
 
 sub results  {
     my ( $self, @args ) = @_;
-    my @params = $self->bind_params;
-    my @pass_values;
-    
-    for (@args) {
-        if ( ref $_ && $_->can('meta') &&  $_->meta->does_role('Storm::Role::Object') ) {
-            $_ =  $_->meta->primary_key->get_value( $_ );
-        }
-    }
-    
-    for my $param (@params) {
-        if ( ref $param ) {
-            if (  $param->isa('Storm::SQL::Parameter') ) {
-                push @pass_values, shift @args;
-            }
-            elsif ( $param->can('meta') &&
-                    $param->meta->does_role('Storm::Role::Object') ) {
-                my $id = $param->meta->primary_key->get_value( $param );
-                push @pass_values, $id;
-            }
-            else {
-                push @pass_values, $param;
-            }
-        }
-        else {
-            push @pass_values, $param;
-        }
-    }
-    
-    my $results = Storm::Query::Select::Iterator->new($self, @pass_values);
+    my @params = $self->_combine_bind_params_and_args( [$self->bind_params], \@args );
+    my $results = Storm::Query::Select::Iterator->new($self, @params);
     return $results;
 }
 

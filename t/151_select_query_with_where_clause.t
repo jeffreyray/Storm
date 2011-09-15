@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 
 # build the testing class
@@ -75,5 +75,12 @@ for (@test_info) {
     $q->where( '.first_name', 'not in', qw/Lisa Bart Rod Todd/);
     my @results = $q->results->all;
     is scalar (@results), 5, 'not in successful';
+}
+
+{ # with place holder
+    my $q = $storm->select( 'Person' );
+    $q->where( '.age', '=', '?' );
+    my @results = $q->results( 28 )->all;
+    is scalar (@results), 1, 'place holder successful';
 }
 

@@ -16,18 +16,19 @@ has 'class' => (
     required => 1,
 );
 
-sub BUILDARGS {
+around BUILDARGS => sub {
+    my $orig = shift;
     my $class = shift;
     
     # parse arguments
-    if (@_ == 2 ) {
-        return { orm => $_[0], class => $_[1] }
+    if (@_ >= 2 ) {
+        return $class->$orig( orm => shift, class => shift, @_ );
     }
     # otherwise pass upwords to deal with
     else {
-        return __PACKAGE__->SUPER::BUILDARGS(@_);
+        return $class->$orig( @_ );
     }
-}
+};
 
 sub dbh  {
     $_[0]->orm->source->dbh;

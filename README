@@ -1,4 +1,4 @@
-Storm version 0.01
+Storm version 0.10
 ===========================
 
 See the individual module documentation for more information
@@ -26,7 +26,7 @@ This module requires these other modules and libraries:
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2010 Jeffrey Ray Hallock.
+Copyright (C) 011 Jeffrey Ray Hallock.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -1,6 +1,12 @@
 Changes for perl module Storm
 
 
+0.10
+- update to Storm::Role::Query::HasBindParams
+- update Storm::Role::Query, first two arguments passed to query constructor
+are now always the Storm instance and the class to work on
+- supports StormsX::Query::DeleteWhere
+
 0.09
 - removed use of MooseX::Method::Signatures
 

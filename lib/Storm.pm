@@ -1,6 +1,6 @@
 package Storm;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 our $AUTHORITY = 'cpan:JHALLOCK';
 
 use Moose;

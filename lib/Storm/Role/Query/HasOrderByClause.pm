@@ -21,18 +21,14 @@ has '_order_by' => (
 
 sub order_by {
     my ( $self, @args ) = @_;
-    my @elements;
     my $map = $self->_attribute_map;
     
-    for ( @args ) {
-        my ( $token, $order ) = ref $_ eq 'ARRAY' ? ( @$_ ) : ( $_ );
-        ( $token ) = $self->args_to_sql_objects( $token );
+    my ( $token, $order ) = @args;
+    ( $token ) = $self->args_to_sql_objects( $token );
 
-        my $element = Storm::SQL::Fragment::OrderBy->new($token, $order);
-        push @elements, $element;
-    }
+    my $element = Storm::SQL::Fragment::OrderBy->new($token, $order);
+    $self->_add_order_by_element( $element );
     
-    $self->_add_order_by_element(@elements);
     return $self;
 }
 

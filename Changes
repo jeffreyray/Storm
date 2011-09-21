@@ -1,6 +1,7 @@
 Changes for perl module Storm
 
 
+
 0.10
 - update to Storm::Role::Query::HasBindParams
 - update Storm::Role::Query, first two arguments passed to query constructor
@@ -27,7 +28,7 @@ BUG FIXES:
 - added "disconnect" method to Storm::Source
 BUG FIXES:
 - fixed bug with custom inflators/deflators where the Storm object $orm was not
-being passed to the inflator/deflatore codeblock
+being passed to the inflator/deflator codeblock
 
 0.05 (ALPHA)
 BUG FIXES:

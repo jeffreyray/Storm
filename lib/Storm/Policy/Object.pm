@@ -36,10 +36,11 @@ has '_transformations' => (
 
 sub BUILD {
     my ( $self ) = @_;
-    $self->add_definition( Any , 'CHAR(64)' );
+    $self->add_definition( Any , 'VARCHAR(64)' );
     $self->add_definition( Num , 'DECIMAL(32,16)' );
     $self->add_definition( Int , 'INTEGER' );
-    $self->add_definition( Object, 'CHAR(255)' );
+    $self->add_definition( Bool, 'INTEGER' );
+    $self->add_definition( Object, 'VARCHAR(255)' );
     
     $self->add_definition( StormArrayRef, 'TEXT' );
     $self->add_transformation( StormArrayRef, {

@@ -10,6 +10,7 @@ use MooseX::SemiAffordanceAccessor;
 use Storm::Aeolus;
 use Storm::LiveObjects;
 use Storm::Query::Delete;
+use Storm::Query::DeleteWhere;
 use Storm::Query::Insert;
 use Storm::Query::Lookup;
 use Storm::Query::Refresh;
@@ -61,12 +62,16 @@ sub delete {
     return 1;
 }
 
-
-
 sub delete_query {
     my ( $self, $class ) = @_;
     confess "$class is not a valid classname" if ! is_ClassName( $class );
     Storm::Query::Delete->new( $self, $class );
+}
+
+sub delete_where {
+    my ( $self, $class ) = @_;
+    confess "$class is not a valid classname" if ! is_ClassName( $class );
+    Storm::Query::DeleteWhere( $self, $class );
 }
 
 

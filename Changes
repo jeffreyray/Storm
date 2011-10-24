@@ -1,6 +1,8 @@
 Changes for perl module Storm
 
 
+0.11
+- added DeleteWhere query
 
 0.10
 - update to Storm::Role::Query::HasBindParams

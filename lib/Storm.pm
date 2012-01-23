@@ -1,6 +1,6 @@
 package Storm;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our $AUTHORITY = 'cpan:JHALLOCK';
 
 use Moose;
@@ -49,6 +49,11 @@ has 'source' => (
     coerce => 1,
 );
 
+# returns an active database handle
+sub dbh {
+    $_[0]->source->dbh;
+}
+
 sub delete {
     my ( $self, @objects ) = @_;
     my %queries;
@@ -71,7 +76,7 @@ sub delete_query {
 sub delete_where {
     my ( $self, $class ) = @_;
     confess "$class is not a valid classname" if ! is_ClassName( $class );
-    Storm::Query::DeleteWhere( $self, $class );
+    Storm::Query::DeleteWhere->new( $self, $class );
 }
 
 
@@ -322,6 +327,11 @@ Deletes the objects from the database.
 
 Returns a L<Storm::Query::Delete> instance for deleting objects of type $class
 from the database.
+
+=item delete_where $class
+
+Returns a L<Storm::Query::DeleteWhere> instance for deleting objects of type
+$class from the database using a where clause.
 
 =item do_transaction \&func
 

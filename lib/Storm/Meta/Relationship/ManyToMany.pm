@@ -5,6 +5,7 @@ use MooseX::StrictConstructor;
 use MooseX::Types::Moose qw( Str Undef);
 
 extends 'Storm::Meta::Relationship';
+use Storm::Types qw( StormForeignKeyConstraintValue );
 
 has 'junction_table' => (
     is => 'rw',
@@ -26,6 +27,20 @@ has 'foreign_match' => (
     writer => '_set_foreign_match',
     lazy_build => 1,
 );
+
+has 'on_delete' => (
+    is => 'rw',
+    isa => StormForeignKeyConstraintValue,
+    default => 'RESTRICT',
+);
+
+has 'on_update' => (
+    is => 'rw',
+    isa => StormForeignKeyConstraintValue,
+    default => 'CASCADE',
+);
+
+
 
 sub _build_junction_table {
     my ( $self ) = @_;

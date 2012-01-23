@@ -11,6 +11,7 @@ use MooseX::Types -declare => [qw(
     StormDeleteQuery
     StormEnabledClassName
     StormEnabledObject
+    StormForeignKeyConstraintValue
     StormInsertQuery
     StormLiveObjects
     StormLiveObjectScope
@@ -135,6 +136,9 @@ subtype StormSQLWhereBoolean,
     as Str,
     where { return $_ =~ /^(?:and|not|or|xor)$/ };
 
+subtype StormForeignKeyConstraintValue,
+    as Str,
+    where { return $_ =~ /^(?:CASCADE|RESTRICT|NO ACTION|SET NULL)$/i};
 
 class_type StormUpdateQuery,
     { class => 'Storm::Query::Update' };

@@ -123,10 +123,11 @@ sub inflate_value {
             my $key = $value;
             $value = $orm->lookup($class, $value);
             
-            confess "could not inflate value for attribute " . $attr->name .
-                    " because we could not locate a $class object in the database" .
-                    " with the identifier $key"
-                    if ! defined $value;
+            use Carp qw( cluck );
+            cluck "could not inflate value for attribute " . $attr->name .
+                " because we could not locate a $class object in the database" .
+                " with the identifier $key"
+                if ! defined $value;
             
             return $value;
         }

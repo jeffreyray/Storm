@@ -5,6 +5,9 @@ use MooseX::SemiAffordanceAccessor;
 use MooseX::StrictConstructor;
 use MooseX::Method::Signatures;
 
+use DateTime::Format::MySQL;
+
+
 use Storm::Types qw(
 MooseAttribute
 Storm
@@ -20,6 +23,89 @@ has 'storm' => (
     required => 1,
     weak_ref => 1,
 );
+
+
+sub backup_class_table {
+    my ( $self, $class, $fh, $opts ) = @_;
+    confess 'You did not supply a filehandle, usage: $aeolus->backup_class_table( $class, $fh)' if ! $fh;
+    $opts->{timestamp} ||= DateTime->now;
+    
+    my $meta = $class->meta;
+    my $table = $meta->storm_table;
+    
+    print $fh qq[# class: $class\n];
+    print $fh qq[# table: ] . $table->name . qq[\n];
+    print $fh qq[# timestamp: ] .  DateTime::Format::MySQL->format_datetime( $opts->{timestamp} ) . "\n";
+    
+    $self->_dump_table_to_file( $table->name, $fh );
+
+}
+
+sub backup_class {
+    my ( $self, $class, $fh, $opts ) = @_;
+    confess 'You did not supply a filehandle, usage: $aeolus->backup_class_table( $class, $fh)' if ! $fh;
+    $opts->{timestamp} ||= DateTime->now;
+    
+    $self->backup_class_table( $class, $fh, $opts );
+    $self->backup_junction_tables( $class, $fh, $opts );
+}
+
+sub backup_junction_tables {
+    my ( $self, $class, $fh, $opts ) = @_;
+    confess 'You did not supply a filehandle, usage: $aeolus->backup_class_table( $class, $fh)' if ! $fh;
+    $opts->{timestamp} ||= DateTime->now;
+    
+    my $meta = $class->meta;
+    my @relationships = map { $meta->get_relationship( $_ ) } $meta->get_relationship_list;
+    
+    my $dbh = $self->storm->source->dbh;
+    
+    for my $r ( @relationships ) {
+        next if $r->isa( 'Storm::Meta::Relationship::OneToMany' );
+        
+        my $table = $r->junction_table;
+        
+        print $fh qq[# junction_table ];
+        print $fh qq[# class1: $class\n];
+        print $fh qq[# class2: ] . $r->foreign_class . qq[\n];
+        print $fh qq[# table: ] . $table . qq[\n];
+        print $fh qq[# timestamp: ] .  DateTime::Format::MySQL->format_datetime( $opts->{timestamp} ) . "\n";
+        
+        $self->_dump_table_to_file( $table, $fh );
+    }
+}
+
+# private method used to dump a database table to a filehandle
+sub _dump_table_to_file {
+    my ( $self, $table, $fh ) = @_;
+    
+    # dump table to file
+    my $sql = 'SELECT * FROM ' . $table . ';';
+    my $dbh = $self->storm->dbh;
+    my $sth = $dbh->prepare( $sql );
+    $sth->execute;
+    
+    my @cols = @{$sth->{NAME}};
+    
+    print $fh join ( '|', @cols ), "\n";
+    
+    no warnings;
+    while ( my @data = $sth->fetchrow_array ) {
+        print $fh join ( '|', @data ), "\n";
+    }
+}
+
+
+# method: class_table_installed $class
+#   returns true if the $class is installed to the database, returns
+#   false otherwise
+sub class_table_installed {
+    my ( $self, $class ) = @_;
+    
+    my $table = $class->meta->storm_table->name;
+    my %tables = ( map { $_ => 1 } $self->storm->source->tables );
+    $tables{$table} ? 1 : 0;
+}
 
 
 method column_definition ( MooseAttribute $attr ) {
@@ -61,6 +147,14 @@ method find_foreign_attributes ( StormEnabledClassName $class ) {
         my $type_constraint = $attr->type_constraint;
         
         while ( $type_constraint ) {
+        
+            # we need to account for how maybe types work
+            if ($type_constraint->parent &&
+                $type_constraint->parent->name eq 'Maybe') {
+                use Moose::Util::TypeConstraints;
+                $type_constraint = find_type_constraint($type_constraint->{type_parameter});
+            }
+            
             if ( is_StormObjectTypeConstraint( $type_constraint ) ) {
                 push @foreign_attributes, [$attr, $type_constraint->class];
                 last;
@@ -89,8 +183,14 @@ method install_class_table ( StormEnabledClassName $class ) {
 }
 
 
-method install_foreign_keys ( StormEnabledClassName $class ) {
-    $self->install_foreign_keys_to_class_table( $class );
+method install_foreign_keys ( $model ) {
+    
+    for my $class ( $model->members ) {
+        $self->install_foreign_keys_to_class_table( $class );
+        $self->install_foreign_keys_to_junction_tables( $class );
+    }
+    
+    
     #$self->install_foreign_keys_to_junction_tables( $class );
 }
 
@@ -108,19 +208,71 @@ method install_foreign_keys_to_class_table ( StormEnabledClassName $class ) {
     for ( @foreign_attributes ) {
         my ( $attr, $foreign_class ) = @$_;
         
-        my $string = "\tADD FOREIGN KEY (" . $attr->column->name . ")\n";
-        $string .= "\t\tREFERENCES " . $foreign_class->meta->storm_table->name;
-        $string .= '(' . $foreign_class->meta->primary_key->column->name . ')';
-        push @key_statements, $string;
+        if ( $attr->does('ForeignKey') ) {
+            my $name1 = $class->meta->storm_table->name . $attr->column->name;
+            $name1 = substr $name1, -30;
+            
+            my $name2 = $foreign_class->meta->storm_table->name . $foreign_class->meta->primary_key->column->name;
+            $name2 = substr $name2, -30;
+            
+            my $cname = 'FK_' . $name1 . '_' . $name2;
+            
+            
+            my $string = "\tCONSTRAINT `$cname` FOREIGN KEY (" . $attr->column->name . ")\n";
+            $string .= "\t\tREFERENCES " . $foreign_class->meta->storm_table->name;
+            $string .= '(' . $foreign_class->meta->primary_key->column->name . ')';
+            
+            $string .= "\n\t\t\tON DELETE " . $attr->on_delete;
+            $string .= "\n\t\t\tON UPDATE " . $attr->on_update;
+            
+            push @key_statements, $string;
+        }
+        
     }
     
-    my $sql = 'ALTER TABLE ' . $class->meta->storm_table->name . "\n";
-    $sql .= join ",\n", @key_statements;
-    $sql .= ';';
+    if ( @key_statements ) {
+        
+        for ( @key_statements ) {
+            my $sql = 'ALTER TABLE `' . $class->meta->storm_table->name . "` ADD \n";
+            $sql .= $_ . ';';
+            
+            $dbh->do( $sql );
+            confess $dbh->errstr if $dbh->err;
+        }
+    }
     
-    $dbh->do( $sql );
-    confess $dbh->errstr if $dbh->err;
 }
+
+method install_foreign_keys_to_junction_tables ( StormEnabledClassName $class ) {
+    my $meta = $class->meta;
+    my @relationships = map { $meta->get_relationship( $_ ) } $meta->get_relationship_list;
+    
+    my $dbh = $self->storm->source->dbh;
+    
+    for my $r ( @relationships ) {
+        next if $r->isa( 'Storm::Meta::Relationship::OneToMany' );
+        
+        my $table = $r->junction_table;
+        my $col1  = $r->local_match;
+        my $col2  = $r->foreign_match;
+        
+        # skip if the table already exists in the database
+        my $infosth = $dbh->table_info( undef, undef, $table, undef );
+        my @tableinfo = $infosth->fetchrow_array;
+        next if @tableinfo;
+        
+        my $sql .= 'ALTER TABLE `' . $table . "` ADD \n";
+        $sql .= "\tCONSTRAINT `FK_$table"."$col1` FOREIGN KEY ($col1)\n";
+        $sql .= "\t\tREFERENCES " . $meta->storm_table->name . "(" . $meta->primary_key->column->name . ")\n";
+        
+        print $sql, "\n\n";
+        
+        #$dbh->do( $sql );
+        #confess $dbh->errstr if $dbh->err;
+    }
+}
+
+
 
 method install_junction_tables ( StormEnabledClassName $class ) {
     my $meta = $class->meta;
@@ -226,6 +378,7 @@ method install_model ( $model ) {
     for my $class ( $model->members ) {
         $self->install_class( $class );
     }
+    $self->install_foreign_keys( $model );
 }
 
 
@@ -270,6 +423,12 @@ The L<Storm> storm instance that Aeolus should act on.
 =head1 METHODS
 
 =over 4
+
+=item backup_class $class, $filehandle, [\%opts]
+
+Backup the data for an entire class and write it to the supplised fielhandle.
+
+= item backup_class_table $class, $filehandle, [\%opts]
 
 =item install_class $class
 

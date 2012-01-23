@@ -4,11 +4,24 @@ use Moose;
 use MooseX::StrictConstructor;
 
 extends 'Storm::Meta::Relationship';
+use Storm::Types qw( StormForeignKeyConstraintValue );
 
 has 'match_on' => (
     is       => 'rw' ,
     isa      => 'Maybe[Str]',
     writer   => '_set_match_on'  ,
+);
+
+has 'on_delete' => (
+    is => 'rw',
+    isa => StormForeignKeyConstraintValue,
+    default => 'RESTRICT',
+);
+
+has 'on_update' => (
+    is => 'rw',
+    isa => StormForeignKeyConstraintValue,
+    default => 'CASCADE',
 );
 
 

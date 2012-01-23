@@ -1,5 +1,13 @@
 Changes for perl module Storm
 
+0.12
+- added dbh method to Storm class
+- added trait ForeignKey
+- added on_delete and on_update attributes to relationship objects
+- program no longer dies when trying to inflate an object with a reference to
+another object which no longer exists, no throws a warning and stack trace instead
+- added SotrmForeignKeyConstraintValue type
+
 
 0.11
 - added DeleteWhere query

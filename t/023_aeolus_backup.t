@@ -1,4 +1,4 @@
-use Test::More 'no_plan';
+use Test::More tests => 1;
 
 
 package Bazzle;
@@ -72,12 +72,16 @@ for my $a ( qw/a b c d e/ ) {
 
 
 # start testing
-
+unlink 'backup.cbk' if -e 'backup.cbk';
 
 open my $fh, '>', 'backup.cbk' or die "Could not open file for writing";
 flock $fh, 2;
 $storm->aeolus->backup_class( 'Bazzle', $fh );
 close $fh;
+
+ok -e 'backup.cbk', 'created backup file';
+
+unlink 'backup.cbk';
 
 
 

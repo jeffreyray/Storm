@@ -215,15 +215,15 @@ method install_foreign_keys_to_class_table ( StormEnabledClassName $class ) {
             my $name2 = $foreign_class->meta->storm_table->name . $foreign_class->meta->primary_key->column->name;
             $name2 = substr $name2, -30;
             
-            my $cname = 'FK_' . $name1 . '_' . $name2;
+            my $cname = 'FK' . $name1 . $name2;
             
             
-            my $string = "\tCONSTRAINT `$cname` FOREIGN KEY (" . $attr->column->name . ")\n";
+            my $string = "CONSTRAINT `$cname`\n\t\tFOREIGN KEY (" . $attr->column->name . ")\n";
             $string .= "\t\tREFERENCES " . $foreign_class->meta->storm_table->name;
             $string .= '(' . $foreign_class->meta->primary_key->column->name . ')';
             
-            $string .= "\n\t\t\tON DELETE " . $attr->on_delete;
-            $string .= "\n\t\t\tON UPDATE " . $attr->on_update;
+            $string .= "\n\t\tON DELETE " . $attr->on_delete;
+            $string .= "\n\t\tON UPDATE " . $attr->on_update;
             
             push @key_statements, $string;
         }
@@ -233,8 +233,11 @@ method install_foreign_keys_to_class_table ( StormEnabledClassName $class ) {
     if ( @key_statements ) {
         
         for ( @key_statements ) {
-            my $sql = 'ALTER TABLE `' . $class->meta->storm_table->name . "` ADD \n";
+            my $sql = 'ALTER TABLE `' . $class->meta->storm_table->name . "`\n";
+            $sql .= "\tADD ";
             $sql .= $_ . ';';
+            
+            print $sql, "\n";
             
             $dbh->do( $sql );
             confess $dbh->errstr if $dbh->err;

@@ -9,10 +9,11 @@ use Storm::Query::Select::Iterator;
 use MooseX::Types::Moose qw( HashRef Str );
 
 with 'Storm::Role::Query';
-with 'Storm::Role::Query::HasBindParams';
-with 'Storm::Role::Query::HasWhereClause';
-with 'Storm::Role::Query::HasOrderByClause';
 with 'Storm::Role::Query::HasAttributeOrder';
+with 'Storm::Role::Query::HasBindParams';
+with 'Storm::Role::Query::HasLimitClause';
+with 'Storm::Role::Query::HasOrderByClause';
+with 'Storm::Role::Query::HasWhereClause';
 
 has '_join' => (
     is => 'rw',

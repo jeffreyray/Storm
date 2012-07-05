@@ -1,4 +1,11 @@
-use Test::More 'no_plan';
+use Test::More;
+
+if( ! $ENV{AUTHOR_TEST} ) {
+    plan skip_all => 'Tests run for module author only.';
+}
+else {
+    plan tests => 1;
+}
 
 package Foo::Bar;
 use Storm::Object;

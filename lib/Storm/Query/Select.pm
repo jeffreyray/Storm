@@ -51,6 +51,7 @@ sub _sql {
         $self->_from_clause    ,
         $self->_where_clause   ,
         $self->_order_by_clause,
+        $self->_limit_clause,
 }
 
 sub join {
@@ -87,6 +88,8 @@ sub _join_clause {
     return if ! defined $self->_join;
     return 'INNER JOIN ' . $self->_join;
 }
+
+
 
 sub bind_params {
     my ( $self ) = @_;

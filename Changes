@@ -1,5 +1,10 @@
 Changes for perl module Storm
 
+0.13
+BUG FIXES:
+- Fixed Limit calues
+
+
 0.12
 - added dbh method to Storm class
 - added trait ForeignKey

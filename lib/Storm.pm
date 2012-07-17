@@ -1,6 +1,6 @@
 package Storm;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 our $AUTHORITY = 'cpan:JHALLOCK';
 
 use Moose;
@@ -272,14 +272,8 @@ If you're new to L<Storm> check out L<Storm::Tutorial>.
     
 =head1 DESCRIPTION
 
-L<Storm> is a Moose based library for storing and retrieving objects from a
+L<Storm> is a Moose based library for storing and retrieving objects over a
 L<DBI> connection.
-
-=head1 ALPHA VERSION
-
-*THIS IS NEW SOFTWARE. IT IS STILL IN DEVELOPMENT. THE API MAY CHANGE IN FUTURE
-VERSIONS WITH NO NOTICE.*
-
 
 =head1 ATTRIBUTES
 
@@ -443,7 +437,7 @@ modified code written by Dave Rolsky for L<Fey> and L<Fey::ORM>.
 
 =head1 COPYRIGHT
 
-    Copyright (c) 2010-2011 Jeffrey Ray Hallock.
+    Copyright (c) 2010-2012 Jeffrey Ray Hallock.
 
     Copyright (c) 2010-2011 Dave Rolsky.
 

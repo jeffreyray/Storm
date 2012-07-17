@@ -3,7 +3,6 @@ package Storm::Aeolus;
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 use MooseX::StrictConstructor;
-use MooseX::Method::Signatures;
 
 use DateTime::Format::MySQL;
 
@@ -108,7 +107,11 @@ sub class_table_installed {
 }
 
 
-method column_definition ( MooseAttribute $attr ) {
+sub column_definition  {
+    my ( $self, $attr ) = @_;
+    
+    $self->meta->throw_error( qq[$attr is not a Moose attribute] ) if ! is_MooseAttribute( $attr );
+    
     my $type_constraint = $attr->type_constraint;
     
     my $definition = $type_constraint ? undef : 'VARCHAR(64)';
@@ -136,8 +139,11 @@ method column_definition ( MooseAttribute $attr ) {
     return $definition;
 }
 
-method find_foreign_attributes ( StormEnabledClassName $class ) {
+sub find_foreign_attributes {
+    my ( $self, $class ) = @_;
     my $meta = $class->meta;
+    
+    $self->meta->throw_error( qq[$class is not a Storm enabled class] ) if ! is_StormEnabledClassName( $class );
     
     # find the foreign attributes
     my @foreign_attributes;
@@ -167,13 +173,22 @@ method find_foreign_attributes ( StormEnabledClassName $class ) {
     return @foreign_attributes;
 }
 
-method install_class ( StormEnabledClassName $class ) {
+sub install_class  {
+    my ( $self, $class ) = @_;
+    
+    $self->meta->throw_error( qq[$class is not a Storm enabled class] ) if ! is_StormEnabledClassName( $class );
+    
     $self->install_class_table( $class );
     $self->install_junction_tables( $class );
     return 1;
 }
 
-method install_class_table ( StormEnabledClassName $class ) {
+sub install_class_table {
+    my ( $self, $class ) = @_;
+    
+    $self->meta->throw_error( qq[$class is not a Storm enabled class] ) if ! is_StormEnabledClassName( $class );
+  
+    
     my $sql = $self->table_definition( $class );
     
     my $dbh = $self->storm->source->dbh;
@@ -183,18 +198,21 @@ method install_class_table ( StormEnabledClassName $class ) {
 }
 
 
-method install_foreign_keys ( $model ) {
+sub install_foreign_keys {
+    my ( $self, $model ) = @_;
     
     for my $class ( $model->members ) {
         $self->install_foreign_keys_to_class_table( $class );
         $self->install_foreign_keys_to_junction_tables( $class );
     }
-    
-    
-    #$self->install_foreign_keys_to_junction_tables( $class );
 }
 
-method install_foreign_keys_to_class_table ( StormEnabledClassName $class ) {
+sub install_foreign_keys_to_class_table  {
+    my ( $self, $class ) = @_;
+    
+    $self->meta->throw_error( qq[$class is not a Storm enabled class] ) if ! is_StormEnabledClassName( $class );
+    
+    
     my $meta = $class->meta;
     
     # find the foreign attributes
@@ -246,7 +264,11 @@ method install_foreign_keys_to_class_table ( StormEnabledClassName $class ) {
     
 }
 
-method install_foreign_keys_to_junction_tables ( StormEnabledClassName $class ) {
+sub install_foreign_keys_to_junction_tables  {
+    my ( $self, $class ) = @_;
+
+    $self->meta->throw_error( qq[$class is not a Storm enabled class] ) if ! is_StormEnabledClassName( $class );
+    
     my $meta = $class->meta;
     my @relationships = map { $meta->get_relationship( $_ ) } $meta->get_relationship_list;
     
@@ -277,7 +299,11 @@ method install_foreign_keys_to_junction_tables ( StormEnabledClassName $class ) 
 
 
 
-method install_junction_tables ( StormEnabledClassName $class ) {
+sub install_junction_tables {
+    my ( $self, $class ) = @_;
+
+    $self->meta->throw_error( qq[$class is not a Storm enabled class] ) if ! is_StormEnabledClassName( $class );
+    
     my $meta = $class->meta;
     my @relationships = map { $meta->get_relationship( $_ ) } $meta->get_relationship_list;
     
@@ -310,7 +336,9 @@ method install_junction_tables ( StormEnabledClassName $class ) {
     }
 }
 
-method start_fresh ( ) {
+sub start_fresh {
+    my ( $self ) = @_;
+    
     my $source = $self->storm->source;
     $source->disable_foreign_key_checks;
     $source->dbh->do("DROP TABLE $_") for $self->storm->source->tables;
@@ -318,7 +346,11 @@ method start_fresh ( ) {
 }
 
 
-method table_definition ( StormEnabledClassName $class ) {
+sub table_definition {
+    my ( $self, $class ) = @_;
+
+    $self->meta->throw_error( qq[$class is not a Storm enabled class] ) if ! is_StormEnabledClassName( $class );
+    
     my $meta = $class->meta;
     my $table = $meta->storm_table;
     
@@ -377,7 +409,9 @@ method table_definition ( StormEnabledClassName $class ) {
 }
 
 
-method install_model ( $model ) {
+sub install_model {
+    my ( $self, $model ) = @_;
+    
     for my $class ( $model->members ) {
         $self->install_class( $class );
     }

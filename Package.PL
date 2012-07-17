@@ -10,7 +10,6 @@ my $pack = Module::Package->new(
 	'Moose' => 0,
 	'MooseX::SemiAffordanceAccessor' => 0,
         'MooseX::StrictConstructor' => 0,
-	'MooseX::Method::Signatures' => 0,
 	'MooseX::Types' => 0,
     },
     abstract_from => 'lib/Storm.pm',

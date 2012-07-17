@@ -1,5 +1,9 @@
 Changes for perl module Storm
 
+0.14
+- Removed dependancy on MooseX::Method::Signatures
+
+
 0.13
 BUG FIXES:
 - Fixed Limit calues

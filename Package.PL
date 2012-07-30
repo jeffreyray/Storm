@@ -1,10 +1,12 @@
 use Module::Package;
+
 my $pack = Module::Package->new(
     name => 'Storm',
     version_from => 'lib/Storm.pm',
     prereq_pm => {
         'DateTime',
         'DateTime::Format::SQLite',
+        'DateTime::Format::MySQL',
         'DBI' => 0,
 	'DBD::SQLite' => 0,
 	'Moose' => 0,

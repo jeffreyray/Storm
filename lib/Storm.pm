@@ -1,6 +1,6 @@
 package Storm;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 our $AUTHORITY = 'cpan:JHALLOCK';
 
 use Moose;
@@ -415,15 +415,15 @@ L<Storm> has only been tested using MySQL and SQLite.
 
 =head1 BUGS
 
-Please report bugs by going to http://blue-aeolus.com/storm/
+Please report bugs on CPAN.
 
 =head1 AUTHORS
 
 Jeffrey Ray Hallock E<lt>jeffrey.hallock at gmail dot comE<gt>
 
-Dave Rolsky <autarch@urth.org>
+Dave Rolsky E<lt>autarch@urth.orgE<gt>
 
-Yuval Kogman <nothingmuch@woobling.org>
+Yuval Kogman E<lt>nothingmuch@woobling.orgE<gt>
 
 Special thanks to Yuval Kogman and Dave Rolsky, for who without their talented
 work and this library would not be possible.
@@ -433,7 +433,7 @@ code written by Yuval Kogman for L<KiokuDB>. Documentation for this feature was
 also taken from L<KiokuDB>.
 
 The code for managing the policy and generating sql statements relies on
-modified code written by Dave Rolsky for L<Fey> and L<Fey::ORM>.
+modified code written by Dave Rolsky for L<Fey>.
 
 =head1 COPYRIGHT
 
@@ -443,8 +443,9 @@ modified code written by Dave Rolsky for L<Fey> and L<Fey::ORM>.
 
     Copyright (c) 2008, 2009 Yuval Kogman, Infinity Interactive.
 
-    All rights reserved. This program is free software; you can redistribute it
-    and/or modify it under the same terms as Perl itself.
+    This is free software, licensed under:
+
+    The Artistic License 2.0 (GPL Compatible)
 
 =cut
 

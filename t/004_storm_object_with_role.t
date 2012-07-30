@@ -6,6 +6,8 @@ use Moose::Role;
 
 use MooseX::Types::Moose qw( Int Str );
 
+
+
 has 'foo' => (
     is => 'rw',
     isa => Str,

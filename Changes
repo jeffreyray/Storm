@@ -1,5 +1,9 @@
 Changes for perl module Storm
 
+0.15
+- BUG FIX: Update/clear current scope when scope demolished
+
+
 0.14
 - Removed dependancy on MooseX::Method::Signatures
 

@@ -1,4 +1,4 @@
-Storm version 0.10
+Storm version 0.14
 ===========================
 
 See the individual module documentation for more information
@@ -16,18 +16,28 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
-    DBI
-    DBD::SQLite
-    Moose
-    MooseX::SemiAffordanceAccessor
-    MooseX::StrictConstrctor
-    MooseX::Types
-    
+   DateTime
+   DateTime::Format::SQLite
+   DateTime::Format::MySQL
+   DBI
+   DBD::SQLite
+   Moose
+   MooseX::SemiAffordanceAccessor
+   MooseX::StrictConstrctor
+   MooseX::Types
+
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 011 Jeffrey Ray Hallock.
+   Copyright (c) 2010-2012 Jeffrey Ray Hallock.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+   Copyright (c) 2010-2011 Dave Rolsky.
+
+   Copyright (c) 2008, 2009 Yuval Kogman, Infinity Interactive.
+
+   This is free software, licensed under:
+
+   The Artistic License 2.0 (GPL Compatible)
+
+
 

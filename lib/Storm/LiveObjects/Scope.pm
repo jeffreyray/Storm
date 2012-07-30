@@ -33,8 +33,8 @@ sub DEMOLISH {
 
     if ( my $lo = $self->live_objects ) {
         $self->parent ?
-        $lo->_set_current_scope ( $self ) :
-        $lo->_clear_current_scope;
+        $lo->set_current_scope ( $self->parent ) :
+        $lo->clear_current_scope;
     }
 }
 

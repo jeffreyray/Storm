@@ -1,6 +1,7 @@
 package Storm::Role::Query::HasLimitClause;
 
 use Moose::Role;
+use MooseX::SemiAffordanceAccessor;
 use MooseX::Types::Moose qw( ArrayRef );
 
 

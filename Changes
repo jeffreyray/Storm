@@ -1,5 +1,11 @@
 Changes for perl module Storm
 
+
+0.16
+- Added Storm::Role for composing roles with Storm-enabled attributes
+- Compliant with Moose 2.0+
+
+
 0.15
 - BUG FIX: Update/clear current scope when scope demolished
 

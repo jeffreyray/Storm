@@ -1,6 +1,8 @@
 Changes for perl module Storm
 
 
+{{$NEXT}}
+
 0.16
 - Added Storm::Role for composing roles with Storm-enabled attributes
 - Compliant with Moose 2.0+

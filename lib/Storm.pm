@@ -1,8 +1,5 @@
 package Storm;
 
-our $VERSION = '0.16';
-our $AUTHORITY = 'cpan:JHALLOCK';
-
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::SemiAffordanceAccessor;

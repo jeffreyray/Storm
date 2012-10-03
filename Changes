@@ -2,6 +2,7 @@ Changes for perl module Storm
 
 
 {{$NEXT}}
+- Does not try to install foreign keyes on SQLite DBD driver
 
 0.16
 - Added Storm::Role for composing roles with Storm-enabled attributes

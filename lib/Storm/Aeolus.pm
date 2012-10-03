@@ -201,6 +201,10 @@ sub install_class_table {
 sub install_foreign_keys {
     my ( $self, $model ) = @_;
     
+    my $dbh = $self->storm->source->dbh;
+    
+    return if ( $dbh->{Driver}{Name} eq 'SQLite' );
+    
     for my $class ( $model->members ) {
         $self->install_foreign_keys_to_class_table( $class );
         $self->install_foreign_keys_to_junction_tables( $class );

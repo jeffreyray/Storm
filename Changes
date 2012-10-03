@@ -2,6 +2,8 @@ Changes for perl module Storm
 
 
 {{$NEXT}}
+
+0.19      2012-10-03 18:26:16
 - Does not try to install foreign keyes on SQLite DBD driver
 
 0.16

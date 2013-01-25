@@ -27,7 +27,7 @@ sub delete  {
 
 sub _sql {
     my ( $self ) = @_;
-    my $table = $self->class->meta->storm_table->sql;
+    my $table = $self->orm->table( $self->class );
     my $sql = qq[DELETE FROM $table ];
     $sql .= $self->_where_clause;
     return $sql;

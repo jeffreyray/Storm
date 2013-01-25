@@ -107,8 +107,8 @@ sub _link {
     
     if ( ! $self->_has_link( $attr->name ) ) {
         # create the comparison
-        my $column1 = Storm::SQL::Column->new( $self->class->meta->storm_table->name . '.' . $attr->column->name );
-        my $column2 = Storm::SQL::Column->new( $class->meta->storm_table->name . '.' . $class->meta->primary_key->column->name );
+        my $column1 = Storm::SQL::Column->new( $self->orm->table( $self->class ) . '.' . $attr->column->name );
+        my $column2 = Storm::SQL::Column->new( $self->orm->table( $class ) . '.' . $class->meta->primary_key->column->name );
         my $element = Storm::SQL::Fragment::Where::Comparison->new($column1, '=', $column2);
         $self->_add_and_if_needed;
         $self->_add_where_element($element);

@@ -69,7 +69,7 @@ sub _add_method  {
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
-    my $table = $self->junction_table;
+    my $table = $orm->table( $self->junction_table );
     my $primary_key = $self->local_match ? $self->local_match : $self->associated_class->meta->primary_key->column->name;
     my $foreign_key = $self->foreign_match? $self->foreign_match : $self->foreign_class->meta->primary_key->column->name;
     
@@ -90,7 +90,8 @@ sub _remove_method  {
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
-    my $table = $self->junction_table;
+    my $table = $orm->table( $self->junction_table );
+    
     my $primary_key = $self->local_match ? $self->local_match  : $self->associated_class->meta->primary_key->column->name;
     my $foreign_key = $self->foreign_match? $self->foreign_match : $self->foreign_class->meta->primary_key->column->name;
     
@@ -109,8 +110,8 @@ sub _iter_method   {
     my $orm = $instance->orm;
     confess "$instance must exist in the database" if ! $orm;
     
-    my $link_table     = $self->junction_table;
-    my $foreign_table  = $self->foreign_class->meta->storm_table->name;
+    my $link_table     = $orm->table( $self->junction_table );
+    my $foreign_table  = $orm->table( $self->foreign_class );
 
     my $primary_key = $self->local_match ? $self->local_match  : $self->associated_class->meta->primary_key->column->name;
     my $foreign_key = $self->foreign_match? $self->foreign_match : $self->foreign_class->meta->primary_key->column->name;

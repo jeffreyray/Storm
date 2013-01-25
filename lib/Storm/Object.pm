@@ -34,27 +34,6 @@ Moose::Exporter->setup_import_methods(
     base_class_roles => [ 'Storm::Role::Object' ],
 );
 
-#sub init_meta {
-#    my ( $class, %options ) = @_;
-#    Moose->init_meta( %options );
-#    
-#    Moose::Util::MetaRole::apply_metaroles(
-#        for       => $options{for_class},
-#        class_metaroles => {
-#            class => [ 'Storm::Role::Object::Meta::Class' ],
-#            attribute => [ 'Storm::Role::Object::Meta::Attribute' ],
-#        },
-#        role_metaroles => {
-#            applied_attribute => [ 'Storm::Role::Object::Meta::Attribute' ],
-#        }
-#    );
-#    
-#    Moose::Util::MetaRole::apply_base_class_roles(
-#        for       => $options{for_class},
-#        roles           => [ 'Storm::Role::Object'  ],
-#    );
-#}
-
 sub storm_table {
    my $caller = shift;
    my $meta   = $caller->meta;

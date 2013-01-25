@@ -17,7 +17,7 @@ use Storm::Source;
 use Storm::Transaction;
 
 use Storm::Types qw( StormAeolus StormLiveObjects StormPolicyObject StormSource );
-use MooseX::Types::Moose qw( CodeRef ClassName );
+use MooseX::Types::Moose qw( CodeRef ClassName Str Object );
 
 
 has 'aeolus' => (
@@ -44,6 +44,12 @@ has 'source' => (
     is  => 'rw',
     isa => StormSource,
     coerce => 1,
+);
+
+has 'table_prefix' => (
+    is => 'rw',
+    isa => 'Str',
+    default => '',
 );
 
 # returns an active database handle
@@ -180,6 +186,18 @@ sub select_query {
     Storm::Query::Select->new( $self, $class );
 }
 
+sub table {
+    my ( $self, $arg ) = @_;
+    $self->meta->throw_error( "Must pass in a \$class or \$table_name" ) if ! defined $arg;
+    
+    if ( is_ClassName $arg || is_Object $arg ) {
+        return $self->table_prefix . $arg->meta->storm_table->name;
+    }
+    if ( is_Str $arg ) {
+        return $self->table_prefix . $arg;
+    }
+}
+
 
 
 sub update {
@@ -304,6 +322,10 @@ Required.
 The L<Storm::Source> object responsible for spawning active database handles. A
 Storm::Source object will be coerced from a ArrayRef or Hashref.
 
+=item table_prefix
+
+The prefix to add to table names.
+
 =back
 
 =head1 METHODS
@@ -368,6 +390,11 @@ Synonamous with C<select_query>. Provided for consistency.
   
 Returns a L<Storm::Query::Select> instance for selecting objects from the
 database.
+
+=item table ClassName | Str
+
+Returns the name of the table with the C<table_prefix> prepended for the given C<ClassName>.
+Prepends C<table_prefix> to argument if it is a string.
 
 =item update @objects
 

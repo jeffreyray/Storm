@@ -26,7 +26,7 @@ has 'auto_increment' => (
 
 sub sql  {
     my ( $self, $table ) = @_;
-    $table ? $table->name . '.' . $self->name :  $self->name;
+    $table ? $table . '.' . $self->name :  $self->name;
 }
 
 no Moose;

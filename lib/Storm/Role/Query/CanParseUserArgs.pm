@@ -26,7 +26,7 @@ sub args_to_sql_objects {
                 my $attname = $1;
                 if ( exists $map->{$1} ) {
                     my $column = Storm::SQL::Column->new(
-                        $self->class->meta->storm_table->name . '.' . $map->{$1}->column->name
+                        $self->orm->table( $self->class ) . '.' . $map->{$1}->column->name
                     );
                     
                     $_ = $column;
@@ -71,7 +71,7 @@ sub args_to_sql_objects {
                             
                             $_ = $column;
                             
-                            $self->_from( $class->meta->storm_table );
+                            $self->_from( $class->meta->storm_table  );
                             $self->_link(  $attr, $class );
                         }
                         else {

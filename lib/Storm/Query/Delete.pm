@@ -9,7 +9,7 @@ with 'Storm::Role::Query::IsExecutable';
 
 sub _sql {
     my ( $self ) = @_;
-    my $table = $self->class->meta->storm_table->sql;
+    my $table = $self->orm->table( $self->class );
     my $column = $self->class->meta->primary_key->column->sql;
     return  qq[DELETE FROM $table WHERE $column = ?];
 }

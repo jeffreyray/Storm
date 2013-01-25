@@ -37,7 +37,7 @@ sub update {
 
 sub _sql {
     my ( $self ) = @_;
-    my $table = $self->class->meta->storm_table->sql;
+    my $table = $self->orm->table( $self->class );
     my $primary_key = $self->class->meta->primary_key->column->name;
     
     # NOTE: column->name should probably be column->sql, problem is that

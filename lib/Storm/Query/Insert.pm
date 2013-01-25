@@ -41,7 +41,7 @@ sub insert {
         
         # discover primary key if auto_increment
         if ( $autoinc ) {
-            my $key = $orm->source->dbh->last_insert_id( undef, undef, $o->meta->storm_table, undef );
+            my $key = $orm->source->dbh->last_insert_id( undef, undef, $orm->table( $o ), undef );
             $primary_key->set_value( $o, $key );
         }
         
@@ -72,9 +72,10 @@ sub _sql {
 
 sub _insert_clause {
     my ( $self ) = @_;
-    my $table = $self->class->meta->storm_table;
     
-    return 'INSERT INTO ' . $self->dbh->quote_identifier( $table->sql );
+    my $table = $self->orm->table( $self->class );
+    
+    return 'INSERT INTO ' . $self->dbh->quote_identifier( $table );
 }
 
 sub _columns_clause {

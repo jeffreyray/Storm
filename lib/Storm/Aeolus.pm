@@ -29,14 +29,8 @@ sub backup_class_table {
     confess 'You did not supply a filehandle, usage: $aeolus->backup_class_table( $class, $fh)' if ! $fh;
     $opts->{timestamp} ||= DateTime->now;
     
-    my $meta = $class->meta;
-    my $table = $meta->storm_table;
     
-    print $fh qq[# class: $class\n];
-    print $fh qq[# table: ] . $table->name . qq[\n];
-    print $fh qq[# timestamp: ] .  DateTime::Format::MySQL->format_datetime( $opts->{timestamp} ) . "\n";
-    
-    $self->_dump_table_to_file( $table->name, $fh );
+    $self->_dump_table_to_file( $self->storm->table( $class ), $fh );
 
 }
 
@@ -62,15 +56,7 @@ sub backup_junction_tables {
     for my $r ( @relationships ) {
         next if $r->isa( 'Storm::Meta::Relationship::OneToMany' );
         
-        my $table = $r->junction_table;
-        
-        print $fh qq[# junction_table ];
-        print $fh qq[# class1: $class\n];
-        print $fh qq[# class2: ] . $r->foreign_class . qq[\n];
-        print $fh qq[# table: ] . $table . qq[\n];
-        print $fh qq[# timestamp: ] .  DateTime::Format::MySQL->format_datetime( $opts->{timestamp} ) . "\n";
-        
-        $self->_dump_table_to_file( $table, $fh );
+        $self->_dump_table_to_file( $r->junction_table, $fh );
     }
 }
 
@@ -100,10 +86,9 @@ sub _dump_table_to_file {
 #   false otherwise
 sub class_table_installed {
     my ( $self, $class ) = @_;
-    
-    my $table = $class->meta->storm_table->name;
+
     my %tables = ( map { $_ => 1 } $self->storm->source->tables );
-    $tables{$table} ? 1 : 0;
+    $tables{ $self->storm->table( $class ) } ? 1 : 0;
 }
 
 
@@ -190,6 +175,7 @@ sub install_class_table {
   
     
     my $sql = $self->table_definition( $class );
+    print $sql, "\n";
     
     my $dbh = $self->storm->source->dbh;
     $dbh->do( $sql );
@@ -237,11 +223,11 @@ sub install_foreign_keys_to_class_table  {
             my $name2 = $foreign_class->meta->storm_table->name . $foreign_class->meta->primary_key->column->name;
             $name2 = substr $name2, -30;
             
-            my $cname = 'FK' . $name1 . $name2;
+            my $cname = $self->storm->table_prefix . 'FK' . $name1 . $name2;
             
             
             my $string = "CONSTRAINT `$cname`\n\t\tFOREIGN KEY (" . $attr->column->name . ")\n";
-            $string .= "\t\tREFERENCES " . $foreign_class->meta->storm_table->name;
+            $string .= "\t\tREFERENCES " . $self->storm->table( $foreign_class );
             $string .= '(' . $foreign_class->meta->primary_key->column->name . ')';
             
             $string .= "\n\t\tON DELETE " . $attr->on_delete;
@@ -255,7 +241,7 @@ sub install_foreign_keys_to_class_table  {
     if ( @key_statements ) {
         
         for ( @key_statements ) {
-            my $sql = 'ALTER TABLE `' . $class->meta->storm_table->name . "`\n";
+            my $sql = 'ALTER TABLE `' . $self->storm->table( $class ) . "`\n";
             $sql .= "\tADD ";
             $sql .= $_ . ';';
             
@@ -281,7 +267,7 @@ sub install_foreign_keys_to_junction_tables  {
     for my $r ( @relationships ) {
         next if $r->isa( 'Storm::Meta::Relationship::OneToMany' );
         
-        my $table = $r->junction_table;
+        my $table = $self->storm->table( $r->junction_table );
         my $col1  = $r->local_match;
         my $col2  = $r->foreign_match;
         
@@ -292,7 +278,7 @@ sub install_foreign_keys_to_junction_tables  {
         
         my $sql .= 'ALTER TABLE `' . $table . "` ADD \n";
         $sql .= "\tCONSTRAINT `FK_$table"."$col1` FOREIGN KEY ($col1)\n";
-        $sql .= "\t\tREFERENCES " . $meta->storm_table->name . "(" . $meta->primary_key->column->name . ")\n";
+        $sql .= "\t\tREFERENCES " . $self->storm->table( $class ) . "(" . $meta->primary_key->column->name . ")\n";
         
         print $sql, "\n\n";
         
@@ -316,7 +302,7 @@ sub install_junction_tables {
     for my $r ( @relationships ) {
         next if $r->isa( 'Storm::Meta::Relationship::OneToMany' );
         
-        my $table = $r->junction_table;
+        my $table = $self->storm->table( $r->junction_table );
         my $col1  = $r->local_match;
         my $col2  = $r->foreign_match;
         
@@ -328,10 +314,6 @@ sub install_junction_tables {
         my $sql = 'CREATE TABLE ' . $table . ' (' . "\n";
         $sql .= "\t" . $col1 . ' ' . $self->column_definition( $meta->primary_key ) . ",\n";
         $sql .= "\t" . $col2 . ' ' . $self->column_definition( $r->foreign_class->meta->primary_key ) . "\n";
-        #$sql .= "\tFOREIGN KEY (" . $col1 . ") REFERENCES ";
-        #$sql .= $r->foreign_class->meta->storm_table->name . '(' . $r->foreign_class->meta->primary_key->column->name . "),\n";
-        #$sql .= "\tFOREIGN KEY (" . $col2 . ") REFERENCES ";
-        #$sql .= $meta->storm_table->name . '(' . $meta->primary_key->column->name . ")\n";
         $sql .= ');';
         
         
@@ -356,9 +338,7 @@ sub table_definition {
     $self->meta->throw_error( qq[$class is not a Storm enabled class] ) if ! is_StormEnabledClassName( $class );
     
     my $meta = $class->meta;
-    my $table = $meta->storm_table;
-    
-    
+   
     my %defmap; # definition map
     
     # get the definition for each attribute
@@ -373,7 +353,7 @@ sub table_definition {
         };
     }
     
-    my $sql = 'CREATE TABLE ' . $table->name . ' (' . "\n";
+    my $sql = 'CREATE TABLE ' . $self->storm->table( $class ) . ' (' . "\n";
     
     my (@definitions, @key_statements);
     
@@ -394,17 +374,6 @@ sub table_definition {
         push @definitions, $string;
     }
     
-    # foreign key definitions
-    #my @foreign_attributes = $self->find_foreign_attributes( $class );
-    #for ( @foreign_attributes ) {
-    #    my ( $attr, $foreign_class ) = @$_;
-    #    
-    #    my $string = "\tFOREIGN KEY (" . $attr->column->name . ") ";
-    #    $string .= "REFERENCES " . $foreign_class->meta->storm_table->name;
-    #    $string .= '(' . $foreign_class->meta->primary_key->column->name . ')';
-    #    push @key_statements, $string;
-    #}
-   
     $sql .= join ",\n", @definitions;
     $sql .= ",\n" . join(",\n", @key_statements) if @key_statements;
     $sql .= "\n);";

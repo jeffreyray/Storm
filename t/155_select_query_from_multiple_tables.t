@@ -40,6 +40,8 @@ $storm->insert( $person );
 
 
 my $q = $storm->select('Person')->where('.position.title', '=', 'Owner');
+print $q->_sql, "\n";
+
 my @results = $q->results->all;
 ok scalar @results == 1 && $results[0]->name eq 'Ned', 'select successful';
 

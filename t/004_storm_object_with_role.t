@@ -32,7 +32,7 @@ use Test::More tests => 1;
 
 
 
-is (Bar->meta->get_attribute( 'foo' )->column->sql( Bar->meta->storm_table ), 'Bazzle.foo', 'attribute added from role');
+is (Bar->meta->get_attribute( 'foo' )->column->sql( Bar->meta->storm_table->name ), 'Bazzle.foo', 'attribute added from role');
 
 
 

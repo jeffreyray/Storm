@@ -87,19 +87,8 @@ sub _get_next_result {
     my  $select = $self->select;
     my  $class  = $select->class;
     
-    # TODO: WRITE BENCHMARCKS FOR DIFFERENT SCENARIOS
-    # I think it might be better here to fetch only the ids of the
-    # matching records, and then use a lookup query to retrieve the record
-    # if the object is cached locally, there is no need to fetch the data
-    # from the database ( here we retrieving the data for all records that
-    # match the query, then ignoring it for records the are cached )
-    # the downside to this is that the result is issuing multiple lookup
-    # commands will result in sending more reqests to the database, which could
-    # potentially be slower
    
     my  $sth  = $self->_sth;
-    
-    
     
     # if the database has gone away, this will fail
     
